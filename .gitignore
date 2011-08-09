@@ -11,3 +11,8 @@ source
 
 # overrideable stuff
 my_environment.yaml
+
+# https://raw.github.com/github/gitignore/master/Global/vim.gitignore
+.*.sw[a-z]
+*.un~
+Session.vim
