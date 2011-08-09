@@ -33,6 +33,14 @@ $filters = [
 	/^Running something$/,
 	/^--- line/,
 	/^Module .* is already loaded/,
+	/^Loading.*magikc$/,
+	/^Loading patches from.*/,
+	/^Pragma Monitor: condition subclass_method$/,
+	/^Loading.*declare_patches.magik$/,
+	/^a .*method_finder loading/,
+	/^method_finder: loaded$/,
+	/^Image updated, Save image if required$/,
+	/^Reloading module definition for/,
 ]
 
 def run_build(image_name)
