@@ -1,5 +1,6 @@
 require 'rake/clean'
 require 'YAML'
+require 'file/tail'
 
 module BUILD
 	Dirs = %w[ images log ]
@@ -23,6 +24,44 @@ class Image
 	end
 end
 
+$filters = [
+	/^Loading module definition/,
+	/^Adding product from/,
+	/^Checking : .* for patches to rev : /,
+	/^compiling /,
+	/^Defining /,
+	/^Running something$/,
+	/^--- line/,
+	/^Module .* is already loaded/,
+]
+
+def run_build(image_name)
+	# output the build log, filter it along the way according to our list of
+	# regex filters, and test for the 'magik' error sequence
+	t = Thread.start do
+		sleep 1
+		File::Tail::Logfile.open("log/main/#{image_name}.log") do |log|
+			log.tail do |line|
+				skip = false
+				$filters.each do |filter|
+					skip = true if line =~ filter
+				end
+				puts line if not skip
+			end
+		end
+	end
+	system "#{$config[:smallworld_gis]}\\bin\\x86\\gis.exe -e environment.bat -l log\\start_gis.log build_#{image_name} <NUL"
+
+	# check file for errors
+	sleep 1
+	File.open("log/main/#{image_name}.log").each do |line|
+		fail "build failed: encountered '**** Error: ' sequence in the logfile" if line =~ /^\*\*\*\* Error: /
+	end
+
+	t.kill
+	fail "build failed: gis.exe returned #{$?.exitstatus}" if $?.exitstatus != 0
+end
+
 def register_image_tasks(image)
 	namespace(image.name) do
 
@@ -30,8 +69,8 @@ def register_image_tasks(image)
 
 		file image.file_name => BUILD::Dirs + base_image_file do
 			puts "Building #{image.description} image"
-			#TODO: enable output in build (as with todo item below)
-			system "#{$config[:smallworld_gis]}\\bin\\x86\\gis.exe -e environment.bat -l log\\start_gis.log build_#{image.name} <NUL"
+
+			run_build image.name
 		end
 
 		desc "Build a #{image.description} image"
@@ -40,7 +79,6 @@ def register_image_tasks(image)
 		desc "Start a #{image.description} image"
 		task :start => image.file_name do
 			puts "Starting #{image.description} image"
-			#TODO: enable the output of this command inside the rake terminal (through File::Tail and a seperate thread)
 			system "#{$config[:smallworld_gis]}\\bin\\x86\\gis.exe -e environment.bat #{image.name}"
 		end
 	end
