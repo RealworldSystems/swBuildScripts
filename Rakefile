@@ -30,9 +30,8 @@ def register_image_tasks(image)
 
 		file image.file_name => BUILD::Dirs + base_image_file do
 			puts "Building #{image.description} image"
-			#TODO: remove the dependency on the batch file to run the build
 			#TODO: enable output in build (as with todo item below)
-			system "build_#{image.name}.bat"
+			system "#{$config[:smallworld_gis]}\\bin\\x86\\gis.exe -e environment.bat -l log\\start_gis.log build_#{image.name} <NUL"
 		end
 
 		desc "Build a #{image.description} image"
@@ -42,7 +41,7 @@ def register_image_tasks(image)
 		task :start => image.file_name do
 			puts "Starting #{image.description} image"
 			#TODO: enable the output of this command inside the rake terminal (through File::Tail and a seperate thread)
-			system %W{ #{$config[:smallworld_gis]}\\bin\\x86\\gis.exe -e environment.bat #{image.name} }.join " "
+			system "#{$config[:smallworld_gis]}\\bin\\x86\\gis.exe -e environment.bat #{image.name}"
 		end
 	end
 end
