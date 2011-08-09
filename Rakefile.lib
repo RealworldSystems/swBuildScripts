@@ -1,0 +1,6 @@
+require 'file/tail'
+
+$smallworld_gis = 'c:\Smallworld\420'
+ENV['SMALLWORLD_GIS'] = $smallworld_gis
+
+ENV['PROJECT_DIR'] = File.dirname(__FILE__)
