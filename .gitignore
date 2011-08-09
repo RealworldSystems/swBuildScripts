@@ -1,7 +1,13 @@
+# standard source checkout stuff
 config
 data
 ds
+images
+log
 modules
 product.def
 resources
 source
+
+# overrideable stuff
+my_environment.yaml
