@@ -1,6 +1,9 @@
 # standard source checkout stuff
+.magik-project
+.project
 config
 data
+doc
 ds
 images
 log
@@ -16,3 +19,10 @@ my_environment.yaml
 .*.sw[a-z]
 *.un~
 Session.vim
+
+# SCM stuff
+.hgignore
+
+# munit stuff
+README.html
+cpl-v10.html
