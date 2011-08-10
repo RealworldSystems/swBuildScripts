@@ -22,6 +22,7 @@ Session.vim
 
 # SCM stuff
 .hgignore
+.svn
 
 # munit stuff
 README.html
