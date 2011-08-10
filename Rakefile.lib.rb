@@ -6,8 +6,14 @@ module BUILD
 	Dirs = %w[ images log ]
 end
 BUILD::Dirs.each {|d| directory d}
+
+# we use the exact opposite notions of clean and clobber, since we don't want
+# to remove the intermediate files (magikc files), but we do want to kill the images
 CLEAN.include(BUILD::Dirs)
 CLEAN.include("start_gis.log")
+
+CLOBBER.include(FileList['**/*.magikc'])
+CLOBBER.include(FileList['**/*.msgc'])
 
 class Image
 	attr_reader :name, :description, :base_image
