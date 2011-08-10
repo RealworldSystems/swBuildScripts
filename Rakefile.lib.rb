@@ -41,6 +41,13 @@ $filters = [
 	/^method_finder: loaded$/,
 	/^Image updated, Save image if required$/,
 	/^Reloading module definition for/,
+	/^message_handler/,
+	/^Module.*does not have any resources/,
+	/^Loading.*\.magik$/,
+	/magikc written$/,
+	/^loading.*\.msg$/,
+	/^generating .*msgc$/,
+	/Product .* is already loaded from/,
 ]
 
 def run_build(image_name)
