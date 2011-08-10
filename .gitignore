@@ -23,7 +23,12 @@ Session.vim
 # SCM stuff
 .hgignore
 .svn
+DEPS
+.gclient
 
 # munit stuff
 README.html
 cpl-v10.html
+
+# utrm stuff
+customization_examples
