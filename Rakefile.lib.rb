@@ -106,6 +106,12 @@ def main
 	$images = {}
 	$sw_environment = load_config
 	$sw_environment['PROJECT_DIR'] = File.dirname(__FILE__)
+	$sw_environment['SW_GIS_ALIAS_FILES'] = File.absolute_path($sw_environment['SW_GIS_ALIAS_FILES'])
+
+	desc "Start emacs"
+	task :emacs do
+		system $sw_environment, "#{$sw_environment['SMALLWORLD_GIS']}\\bin\\x86\\gis.exe -e environment.bat emacs -l bin\\share\\configure_realmacs.el"
+	end
 end
 
 main()
