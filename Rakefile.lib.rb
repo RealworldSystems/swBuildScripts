@@ -35,7 +35,7 @@ $filters = [
 	/^Module .* is already loaded/,
 	/^Loading.*magikc$/,
 	/^Loading patches from.*/,
-	/^Pragma Monitor: condition subclass_method$/,
+	/^Pragma Monitor: condition.*_method$/,
 	/^Loading.*declare_patches.magik$/,
 	/^a .*method_finder loading/,
 	/^method_finder: loaded$/,
