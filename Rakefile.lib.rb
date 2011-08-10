@@ -58,7 +58,7 @@ def run_build(image_name)
 			end
 		end
 	end
-	system "#{$config[:smallworld_gis]}\\bin\\x86\\gis.exe -e environment.bat -l log\\start_gis.log build_#{image_name} <NUL"
+	system $sw_environment, "#{$sw_environment['SMALLWORLD_GIS']}\\bin\\x86\\gis.exe -e environment.bat -l log\\start_gis.log build_#{image_name} <NUL"
 
 	# check file for errors
 	sleep 1
@@ -77,7 +77,6 @@ def register_image_tasks(image)
 
 		file image.file_name => BUILD::Dirs + base_image_file do
 			puts "Building #{image.description} image"
-
 			run_build image.name
 		end
 
@@ -87,7 +86,7 @@ def register_image_tasks(image)
 		desc "Start a #{image.description} image"
 		task :start => image.file_name do
 			puts "Starting #{image.description} image"
-			system "#{$config[:smallworld_gis]}\\bin\\x86\\gis.exe -e environment.bat #{image.name}"
+			system $sw_environment, "#{$sw_environment['SMALLWORLD_GIS']}\\bin\\x86\\gis.exe -e environment.bat #{image.name}"
 		end
 	end
 end
@@ -97,23 +96,16 @@ def smallworld_image(name, description, base_image=nil)
 	register_image_tasks $images[name]
 end
 
-def convert_keys_to_symbols(h)
-	h.inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
-end
-
 def load_config
 	config = YAML.load_file('environment.yaml')
 	config.merge! YAML.load_file('my_environment.yaml') if File.exists?('my_environment.yaml')
-	convert_keys_to_symbols config
+	config
 end
 
 def main
 	$images = {}
-	$config = load_config
-
-	#TODO: try to add these at startup of the cmd, rather than setting them globally
-	ENV['SW_GIS_ALIAS_FILES'] = 'config\magik_images\resources\base\data\gis_aliases'
-	ENV['PROJECT_DIR'] = File.dirname(__FILE__)
+	$sw_environment = load_config
+	$sw_environment['PROJECT_DIR'] = File.dirname(__FILE__)
 end
 
 main()

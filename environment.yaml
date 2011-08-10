@@ -1,2 +1,2 @@
-smallworld_gis: c:\smallworld\420\product
-sw_gis_alias_files: config\magik_images\resource\base\data\gis_aliases
+SMALLWORLD_GIS: c:\smallworld\420\product
+SW_GIS_ALIAS_FILES: config\magik_images\resources\base\data\gis_aliases
