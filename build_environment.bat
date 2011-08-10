@@ -1,0 +1,4 @@
+set LOG_DIR=log
+set SW_SAVE_IMAGE_DIR=%PROJECT_DIR%\images
+set SW_SAVE_IMAGE_DIR_FORMAT=spin
+set SPIN=main
