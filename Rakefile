@@ -1,4 +1,4 @@
-require './Rakefile.lib'
+require_relative 'Rakefile.lib'
 
 # cambridge images
 smallworld_image :cam_db_closed_swaf, "closed cambridge"
