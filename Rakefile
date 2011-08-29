@@ -9,7 +9,7 @@ end
 # add src/common/** to src/{batch,rake}
 file pt.package_dir_path do
 	%w[ src/batch src/rake ].each do |dest|
-		cp_r "src/common", File.join(pt.package_dir_path, dest)
+		cp_r FileList.new("src/common/**"), File.join(pt.package_dir_path, dest)
 	end
 end
 
