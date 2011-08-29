@@ -13,4 +13,4 @@ file pt.package_dir_path do
 	end
 end
 
-task :default => :package
+task :default => :repackage
