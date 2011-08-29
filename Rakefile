@@ -1,6 +1,8 @@
 require 'rake/packagetask'
 
 version = `git rev-parse --short HEAD`.strip
+build_number = ENV['BUILD_NUMBER']
+version += "-build#{build_number}" if build_number
 
 pt = Rake::PackageTask.new("swBuildScripts", version) do |p|
     p.need_zip = true
