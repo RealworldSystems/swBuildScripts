@@ -36,3 +36,6 @@ build.properties
 build.xml
 run_sonar_analysis.bat
 run_tests.bat
+
+# swBuildScripts stuff
+pkg
