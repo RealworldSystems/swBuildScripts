@@ -1,6 +1,8 @@
 require 'rake/packagetask'
 
-pt = Rake::PackageTask.new("swBuildScripts", :noversion) do |p|
+version = `git rev-parse --short HEAD`.strip
+
+pt = Rake::PackageTask.new("swBuildScripts", version) do |p|
     p.need_zip = true
     p.package_files.include %w( src/**/* examples/**/* )
     p.package_files.exclude /common/
