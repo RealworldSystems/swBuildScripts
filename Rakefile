@@ -30,4 +30,47 @@ file pt.package_dir_path do
   end
 end
 
+%w[ cambridge munit cdh utrm ].each do |project|
+  namespace(project) do
+    %w[ batch rake ].each do |product|
+      namespace(product) do
+
+        sources = %W(
+          #{pt.package_dir_path}/src/#{product}
+          #{pt.package_dir_path}/examples/#{product}/#{project}
+        )
+        dest_d = ".."
+
+        desc "Install the #{product} files for #{project}"
+        task :install => :package do
+
+          sources.each do |source_dir|
+            FileList.new("#{source_dir}/**/*").each do |source_f|
+              dest_f = File.join(dest_d, source_f[source_dir.length..-1])
+              puts "** replicating source_f(#{source_f}), dest(#{dest_f})"
+              if File.directory?(source_f)
+                mkdir_p(dest_f)
+              else
+                rm_f dest_f
+                safe_ln source_f, File.dirname(dest_f)
+              end
+            end
+          end
+        end
+
+        desc "Remove all installed files for the #{product} files for #{project}"
+        task :remove => :package do
+          sources.each do |source_dir|
+            FileList.new("#{source_dir}/*").each do |source_f|
+              dest_f = File.join(dest_d, source_f[source_dir.length..-1])
+              rm_rf dest_f
+            end
+          end
+        end
+
+      end
+    end
+  end
+end
+
 task :default => :repackage
