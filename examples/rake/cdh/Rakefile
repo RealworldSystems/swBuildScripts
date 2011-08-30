@@ -1,0 +1,5 @@
+require_relative 'Rakefile.lib'
+
+smallworld_image :cdh, "CDH"
+
+task :default => "cdh:build"

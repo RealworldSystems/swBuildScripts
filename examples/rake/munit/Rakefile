@@ -1,0 +1,6 @@
+require_relative 'Rakefile.lib'
+
+smallworld_image :munit_420, "munit 420"
+smallworld_image :munit_gui, "munit gui"
+
+task :default => "munit_420:build"
