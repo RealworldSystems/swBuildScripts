@@ -47,7 +47,6 @@ end
           sources.each do |source_dir|
             FileList.new("#{source_dir}/**/*").each do |source_f|
               dest_f = File.join(dest_d, source_f[source_dir.length..-1])
-              puts "** replicating source_f(#{source_f}), dest(#{dest_f})"
               if File.directory?(source_f)
                 mkdir_p(dest_f)
               else
