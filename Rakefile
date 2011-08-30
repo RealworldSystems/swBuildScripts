@@ -20,11 +20,10 @@ file pt.package_dir_path do
       FileList.new("#{common_parent}/common/**/*").each do |source_f|
         common_d = File.join(common_parent, "common")
         dest_f = File.join(pt.package_dir_path, common_sibling, source_f[common_d.length..-1])
-        dest_d = File.dirname(dest_f)
         if File.directory?(source_f)
-          mkdir_p(dest_d)
+          mkdir_p(dest_f)
         else
-          safe_ln source_f, dest_d unless File.exist?(dest_f)
+          safe_ln source_f, File.dirname(dest_f) unless File.exist?(dest_f)
         end
       end
     end
