@@ -71,7 +71,7 @@ def run_build(image_name)
       end
     end
   end
-  system $sw_environment, "#{$sw_environment['SMALLWORLD_GIS']}\\bin\\x86\\gis.exe -e environment.bat -l log\\start_gis.log build_#{image_name} <NUL"
+  start_gis_redirect "build_#{image_name}"
 
   # check file for errors
   sleep 1
@@ -99,7 +99,7 @@ def register_image_tasks(image)
     desc "Start a #{image.description} image"
     task :start => image.file_name do
       puts "Starting #{image.description} image"
-      system $sw_environment, "#{$sw_environment['SMALLWORLD_GIS']}\\bin\\x86\\gis.exe -e environment.bat #{image.name}"
+      start_gis image.name
     end
 
     desc "Remove the image for #{image.description}"
@@ -112,6 +112,15 @@ end
 def smallworld_image(name, description, base_image=nil)
   $images[name] = Image.new(name, description, $images[base_image])
   register_image_tasks $images[name]
+end
+
+def start_gis(args)
+  gis_cmd = File.join %W( #{$sw_environment['SMALLWORLD_GIS']} bin x86 gis.exe )
+  system $sw_environment, "#{gis_cmd} -e environment.bat #{args}"
+end
+
+def start_gis_redirect(args)
+  start_gis "-l log\\start_gis.log #{args} <NUL"
 end
 
 def load_config
@@ -128,7 +137,7 @@ def main
 
   desc "Start emacs"
   task :emacs do
-    system $sw_environment, "#{$sw_environment['SMALLWORLD_GIS']}\\bin\\x86\\gis.exe -e environment.bat emacs -l bin\\share\\configure_realmacs.el"
+    start_gis "emacs -l bin\\share\\configure_realmacs.el"
   end
 end
 
