@@ -12,7 +12,7 @@ end
 
 # inline {src,examples/batch}/common dirs into its siblings
 file pt.package_dir_path do
-  %w[ src examples examples/batch ].each do |common_parent|
+  %w[ src examples/rake examples/batch ].each do |common_parent|
     FileList.new("#{common_parent}/*").exclude(/common/).each do |common_sibling|
       # NOTE: we don't want to override existing files, so we can't use cp_r
       # (no support for a non-overwrite switch :S). Hence, we need to manually
