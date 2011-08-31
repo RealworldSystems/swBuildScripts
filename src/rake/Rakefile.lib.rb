@@ -101,6 +101,11 @@ def register_image_tasks(image)
 			puts "Starting #{image.description} image"
 			system $sw_environment, "#{$sw_environment['SMALLWORLD_GIS']}\\bin\\x86\\gis.exe -e environment.bat #{image.name}"
 		end
+
+		desc "Remove the image for #{image.description}"
+		task :clean do
+			rm_f image.file_name
+		end
 	end
 end
 
