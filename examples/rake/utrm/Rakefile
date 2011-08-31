@@ -1,4 +1,4 @@
-require_relative 'Rakefile.lib'
+require_relative 'BuildSmallworldImage'
 
 smallworld_image :runtime, "all runtime software for UTRM"
 smallworld_image :open, "open runtime", :runtime

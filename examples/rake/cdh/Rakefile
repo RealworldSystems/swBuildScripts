@@ -1,4 +1,4 @@
-require_relative 'Rakefile.lib'
+require_relative 'BuildSmallworldImage'
 
 smallworld_image :cdh, "CDH"
 

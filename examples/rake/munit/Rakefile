@@ -1,4 +1,4 @@
-require_relative 'Rakefile.lib'
+require_relative 'BuildSmallworldImage'
 
 smallworld_image :munit_420, "munit 420"
 smallworld_image :munit_gui, "munit gui"
