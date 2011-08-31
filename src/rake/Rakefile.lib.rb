@@ -7,6 +7,9 @@ module BUILD
 end
 BUILD::Dirs.each {|d| directory d}
 
+# TODO: change the descriptions of these tasks, so the user knowns what they
+# actually mean.
+
 # we use the exact opposite notions of clean and clobber, since we don't want
 # to remove the intermediate files (magikc files), but we do want to kill the images
 CLEAN.include(BUILD::Dirs)
@@ -30,7 +33,7 @@ class Image
   end
 end
 
-$filters = [
+$default_filters = [
   /^Loading module definition/,
   /^Adding product from/,
   /^Checking : .* for patches to rev : /,
@@ -56,30 +59,48 @@ $filters = [
   /Product .* is already loaded from/,
 ]
 
+# Checks the logfile for the error sequence, fails if present.
+#
+def fail_on_error(log_file)
+  error_seq = '**** Error: '
+
+  File.open(log_file).each do |line|
+    fail "build failed: encountered '#{error_seq}' sequence in the logfile" if line.index(error_seq)
+  end
+end
+
+# Applies all filters to the line to check if it should be skipped.
+#
+def skip_line?(line)
+	$default_filters.each do |filter|
+		return true if line =~ filter
+	end
+  false
+end
+
+# Builds the given Smallworld image, redirects the build logfile to std out and
+# filters all unwanted lines.
+#
 def run_build(image_name)
-  # output the build log, filter it along the way according to our list of
-  # regex filters, and test for the 'magik' error sequence
+  log_file = "log/main/#{image_name}.log"
   t = Thread.start do
+
     sleep 1
-    File::Tail::Logfile.open("log/main/#{image_name}.log") do |log|
+
+    File::Tail::Logfile.open(log_file) do |log|
       log.tail do |line|
-        skip = false
-        $filters.each do |filter|
-          skip = true if line =~ filter
-        end
-        puts line if not skip
+        puts line if not skip_line? line
       end
     end
+
   end
+
   start_gis_redirect "build_#{image_name}"
 
-  # check file for errors
   sleep 1
-  File.open("log/main/#{image_name}.log").each do |line|
-    fail "build failed: encountered '**** Error: ' sequence in the logfile" if line =~ /^\*\*\*\* Error: /
-  end
-
+  fail_on_error log_file
   t.kill
+
   fail "build failed: gis.exe returned #{$?.exitstatus}" if $?.exitstatus != 0
 end
 
@@ -142,3 +163,5 @@ def main
 end
 
 main()
+
+# vim:set tw=100 ts=2 sts=2 sw=2 et:
