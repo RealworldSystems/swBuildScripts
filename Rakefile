@@ -32,7 +32,7 @@ end
 
 %w[ cambridge munit cdh utrm ].each do |project|
   namespace(project) do
-    %w[ batch rake ].each do |product|
+    (products = %w[ batch rake ]).each do |product|
       namespace(product) do
 
         sources = %W(
@@ -41,8 +41,9 @@ end
         )
         dest_d = ".."
 
+        other_product = (products - [product])[0]
         desc "Install the #{product} files for #{project}"
-        task :install => :package do
+        task :install => [:package, "#{project}:#{other_product}:remove"] do
 
           sources.each do |source_dir|
             FileList.new("#{source_dir}/**/*").each do |source_f|
