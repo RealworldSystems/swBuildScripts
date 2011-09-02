@@ -28,8 +28,8 @@ module Smallworld
   # from the current working dir.
   #
   def start_gis(args)
-    gis_cmd = File.join %W( #{$sw_environment['SMALLWORLD_GIS']} bin x86 gis.exe )
-    system $sw_environment, "#{gis_cmd} -e environment.bat #{args}"
+    gis_cmd = File.join %W( #{SW_ENVIRONMENT['SMALLWORLD_GIS']} bin x86 gis.exe )
+    system SW_ENVIRONMENT, "#{gis_cmd} -e environment.bat #{args}"
   end
   module_function :start_gis
 
@@ -243,9 +243,9 @@ def load_config
   config
 end
 
-$sw_environment = load_config
-$sw_environment['PROJECT_DIR'] = File.dirname(__FILE__)
-$sw_environment['SW_GIS_ALIAS_FILES'] = File.absolute_path($sw_environment['SW_GIS_ALIAS_FILES'])
+SW_ENVIRONMENT = load_config
+SW_ENVIRONMENT['PROJECT_DIR'] = File.dirname(__FILE__)
+SW_ENVIRONMENT['SW_GIS_ALIAS_FILES'] = File.absolute_path(SW_ENVIRONMENT['SW_GIS_ALIAS_FILES'])
 
 desc "Start emacs"
 task :emacs do
