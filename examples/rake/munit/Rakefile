@@ -1,6 +1,9 @@
 require_relative 'BuildSmallworldImage'
 
-smallworld_image :munit_420, "munit 420"
-smallworld_image :munit_gui, "munit gui"
+desc "munit 420"
+smallworld_image :munit_420
+
+desc "munit gui"
+smallworld_image :munit_gui
 
 task :default => "munit_420:build"

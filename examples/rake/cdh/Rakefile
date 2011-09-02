@@ -1,5 +1,6 @@
 require_relative 'BuildSmallworldImage'
 
-smallworld_image :cdh, "CDH"
+desc "CDH"
+smallworld_image :cdh
 
 task :default => "cdh:build"

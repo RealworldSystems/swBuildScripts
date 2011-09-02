@@ -1,8 +1,15 @@
 require_relative 'BuildSmallworldImage'
 
-smallworld_image :runtime, "all runtime software for UTRM"
-smallworld_image :open, "open runtime", :runtime
-smallworld_image :core, "core UTRM modules", :open
-smallworld_image :utrm, "UTRM modules", :core
+desc "all runtime software for UTRM"
+smallworld_image :runtime
+
+desc"open runtime"
+smallworld_image :open =>:runtime
+
+desc "core UTRM modules"
+smallworld_image :core => :open
+
+desc "UTRM modules"
+smallworld_image :utrm =>:core
 
 task :default => "utrm:build"
