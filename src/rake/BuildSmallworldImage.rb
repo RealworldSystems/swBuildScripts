@@ -27,19 +27,19 @@ module Smallworld
   # Start a Smallworld GIS with the given arguments, and the environment.bat
   # from the current working dir.
   #
+  module_function
   def start_gis(args)
     gis_cmd = File.join %W( #{SW_ENVIRONMENT['SMALLWORLD_GIS']} bin x86 gis.exe )
     system SW_ENVIRONMENT, "#{gis_cmd} -e environment.bat #{args}"
   end
-  module_function :start_gis
 
   # Start a Smallworld GIS (similar to +Smallworld::start_gis+), and redirect
   # standard input and output (input to NUL, output to log\start_gis.log).
   #
+  module_function
   def start_gis_redirect(args)
     start_gis "-l log\\start_gis.log #{args} <NUL"
   end
-  module_function :start_gis_redirect
 
   class Image < Rake::Task
 
