@@ -110,7 +110,7 @@ module Smallworld
 
         desc "Remove the image for #{@full_comment}"
         task :clean do
-          rm_f file_name
+          rm_f [file_name, log_file]
         end
       end
     end
@@ -123,27 +123,49 @@ module Smallworld
     # filters all unwanted lines.
     #
     def run_build
-      t = Thread.start do
 
-        # FIXME: loop until the file exists, until a timeout of 5 s., to prevent
-        # us from outputting nothing, if startup of Smallworld takes a while.
-        sleep 1
-
-        File::Tail::Logfile.open(log_file) do |log|
-          log.tail do |line|
-            puts line if not skip_line? line
-          end
-        end
-
+      # TODO: add support for disabling output filtering
+      redirect_logfile_to_console(log_file) do |line|
+        puts line if not skip_line? line
       end
 
       Smallworld.start_gis_redirect "build_#{@name}"
 
-      sleep 1
-      fail_on_error
-      t.kill
-
+      stop_redirection
+      fail "build failed: encountered '#{error_seq}' sequence in the logfile" if output_contains_errors?
       fail "build failed: gis.exe returned #{$?.exitstatus}" if $?.exitstatus != 0
+    end
+
+    # Simulates redirection of the given file, by tailing the file to the
+    # console.
+    #
+    def redirect_logfile_to_console(file)
+      Thread.abort_on_exception = true
+      @output_log_thread = Thread.start do
+
+        until File.exists?(file)
+          sleep 1
+        end
+
+        File::Tail::Logfile.open(file) do |log|
+          log.tail do |line|
+            if block_given?
+              yield line
+            else
+              puts line
+            end
+          end
+        end
+      end
+    end
+
+    # Kill the redirection thread.
+    #
+    def stop_redirection
+      # we use a regular sleep, since a lock is acquired immediately, and the
+      # output is still lost
+      sleep 1
+      @output_log_thread.kill
     end
 
     # Applies all filters to the line to check if it should be skipped.
@@ -155,14 +177,20 @@ module Smallworld
       false
     end
 
+    # The standard Smallworld error sequence.
+    #
+    def error_seq
+      '**** Error: '
+    end
+
     # Checks the logfile for the error sequence, fails if present.
     #
-    def fail_on_error
-      error_seq = '**** Error: '
+    def output_contains_errors?
 
       File.open(log_file).each do |line|
-        fail "build failed: encountered '#{error_seq}' sequence in the logfile" if line.index(error_seq)
+        return true if line.index(error_seq)
       end
+      nil
     end
 
     DEFAULT_FILTERS = [
