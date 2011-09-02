@@ -171,7 +171,8 @@ module Smallworld
     # Applies all filters to the line to check if it should be skipped.
     #
     def skip_line?(line)
-      DEFAULT_FILTERS.each do |filter|
+      user_filters = OUTPUT_FILTERS rescue []
+      (DEFAULT_FILTERS + user_filters).each do |filter|
         return true if line =~ filter
       end
       false

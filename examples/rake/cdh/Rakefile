@@ -1,4 +1,10 @@
+
 require_relative 'BuildSmallworldImage'
+
+# example section for adding additional filters
+#OUTPUT_FILTERS = [
+#	/.*/,
+#]
 
 desc "CDH"
 smallworld_image :cdh
