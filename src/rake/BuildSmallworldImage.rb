@@ -124,7 +124,6 @@ module Smallworld
     #
     def run_build
 
-      # TODO: add support for disabling output filtering
       redirect_logfile_to_console(log_file) do |line|
         puts line if not skip_line? line
       end
@@ -169,8 +168,11 @@ module Smallworld
     end
 
     # Applies all filters to the line to check if it should be skipped.
+    # Disabled if rake is invoke with the trace flag.
     #
     def skip_line?(line)
+      return false if Rake::application.options.trace
+
       user_filters = OUTPUT_FILTERS rescue []
       (DEFAULT_FILTERS + user_filters).each do |filter|
         return true if line =~ filter
