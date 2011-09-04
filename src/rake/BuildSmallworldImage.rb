@@ -2,6 +2,7 @@
 # rake/clean is required below, so we can override the docs
 require 'YAML'
 require 'file/tail'
+require 'erb'
 
 ## ###########################################################################
 # Definition of the Smallworld Image task
@@ -223,7 +224,27 @@ module Smallworld
     ]
 
   end
-end
+
+  # Loads the give YAML encoded config file +f+, and processes it using ERB.
+  #
+  def load_config_file(f)
+    YAML.load(ERB.new(File.read(f)).result)
+  end
+
+  # Load the config environment.yaml, and if present, the user override config
+  # file my_environment.yaml. Processes both files using ERB, so both files can
+  # contain ruby code.
+  #
+  def load_config
+    config_file = 'environment.yaml'
+    user_config_file = 'my_environment.yaml'
+
+    config = load_config_file(config_file)
+    config.merge! load_config_file(user_config_file) if File.exists?(user_config_file)
+    config
+  end
+
+end # module Smallworld
 
 # First define the documenation for these tasks, before requiring the library,
 # we're unable to override it manually.
@@ -239,19 +260,11 @@ CLEAN.include("start_gis.log")
 CLOBBER.include("**/*.magikc")
 CLOBBER.include("**/*.msgc")
 
-def load_config
-  config = YAML.load_file('environment.yaml')
-  config.merge! YAML.load_file('my_environment.yaml') if File.exists?('my_environment.yaml')
-  config
-end
-
-SW_ENVIRONMENT = load_config
-SW_ENVIRONMENT['PROJECT_DIR'] = File.dirname(__FILE__)
-SW_ENVIRONMENT['SW_GIS_ALIAS_FILES'] = File.absolute_path(SW_ENVIRONMENT['SW_GIS_ALIAS_FILES'])
-
 desc "Start emacs"
 task :emacs do
   Smallworld.start_gis "emacs -l bin\\share\\configure_realmacs.el"
 end
+
+SW_ENVIRONMENT = Smallworld::load_config
 
 # vim:set tw=80 ts=2 sts=2 sw=2 et:
