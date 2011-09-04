@@ -115,6 +115,20 @@ module Smallworld
           Smallworld.start_gis @name
         end
 
+        desc "Run unit tests for #{@full_comment} image"
+        task :test => :build do
+          puts "Starting unit tests for #{@full_comment} image"
+
+          start_gis_cmd = %W[ #{Smallworld.gis_cmd} #{@name} ]
+          cmd = [SW_ENVIRONMENT] + start_gis_cmd + [:in => 'config\magik_images\source\run_tests.magik']
+
+          IO.popen cmd do |file|
+            file.each do |line|
+              puts line
+            end
+          end
+        end
+
         desc "Remove the image for #{@full_comment}"
         task :clean do
           rm_f [file_name, log_file]
