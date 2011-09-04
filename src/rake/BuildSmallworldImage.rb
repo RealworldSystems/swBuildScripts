@@ -246,8 +246,12 @@ module Smallworld
 
 end # module Smallworld
 
-# First define the documenation for these tasks, before requiring the library,
-# we're unable to override it manually.
+################################################################################
+# default build targets (CLEAN and EMACS), and retrieval of the environment
+ 
+# First define the documentation for these tasks, before requiring the clean
+# library, since the require statement will define these tasks with a default
+# description, which cannot be overriden.
 desc "Remove images and logfiles."
 task :clean
 
