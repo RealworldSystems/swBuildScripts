@@ -25,12 +25,18 @@ module Smallworld
     DIRS.each {|d| directory d}
   end
 
+  # This returns the GIS command for launching Smallworld.
+  #
+  module_function
+  def gis_cmd
+    File.join %W( #{SW_ENVIRONMENT['SMALLWORLD_GIS']} bin x86 gis.exe )
+  end
+
   # Start a Smallworld GIS with the given arguments, and the environment.bat
   # from the current working dir.
   #
   module_function
   def start_gis(args)
-    gis_cmd = File.join %W( #{SW_ENVIRONMENT['SMALLWORLD_GIS']} bin x86 gis.exe )
     system SW_ENVIRONMENT, "#{gis_cmd} -e environment.bat #{args}"
   end
 
