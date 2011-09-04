@@ -101,7 +101,7 @@ module Smallworld
         end
 
         desc "Build a #{@full_comment} image"
-        task :build => file_name
+        task :build => [:clean_log_file, file_name]
 
         desc "Start a #{@full_comment} image"
         task :start => file_name do
@@ -112,6 +112,10 @@ module Smallworld
         desc "Remove the image for #{@full_comment}"
         task :clean do
           rm_f [file_name, log_file]
+        end
+
+        task :clean_log_file do
+          rm_f log_file
         end
 
         ns.tasks.each do |task|
