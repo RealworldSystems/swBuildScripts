@@ -55,7 +55,7 @@ module Smallworld
       #
       def define_smallworld_image(*args, &block)
         image = Rake.application.define_task(self, *args, &block)
-        image.register_tasks
+        image.register_tasks(&block)
         image.clear_comment
       end
     end
@@ -92,8 +92,8 @@ module Smallworld
     # Registers a build, start and clean task for this image, all in the image's
     # namespace.
     #
-    def register_tasks
-      namespace(@name) do
+    def register_tasks(&block)
+      namespace(@name) do |ns|
 
         file file_name => BUILD::DIRS + [(base_image.file_name rescue nil)].compact do
           puts "Building #{@full_comment} image"
@@ -113,6 +113,11 @@ module Smallworld
         task :clean do
           rm_f [file_name, log_file]
         end
+
+        ns.tasks.each do |task|
+          task.enhance(&block) if block_given?
+        end
+
       end
     end
 
