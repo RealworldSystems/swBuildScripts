@@ -1,4 +1,4 @@
 SMALLWORLD_GIS: c:\smallworld\420\product
 SW_GIS_ALIAS_FILES: <%= File.absolute_path('config\magik_images\resources\base\data\gis_aliases') %>
 EMACSROOT: c:\rwemacslt
-PROJECT_DIR: <%= File.dirname(Dir.pwd) %>
+PROJECT_DIR: <%= Dir.pwd %>
