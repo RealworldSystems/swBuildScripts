@@ -21,7 +21,7 @@ end
 module Smallworld
 
   module BUILD
-    DIRS = %w[ images log ]
+    DIRS = %w[ images log log/tests ]
     DIRS.each {|d| directory d}
   end
 
