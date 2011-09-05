@@ -122,12 +122,14 @@ module Smallworld
           start_gis_cmd = %W[ #{Smallworld.gis_cmd} -e environment.bat #{@name} ]
           cmd = [SW_ENVIRONMENT] + start_gis_cmd + [:in => 'config\magik_images\source\run_tests.magik']
 
+          output_contains_errors = false
           IO.popen cmd do |file|
             file.each do |line|
-              puts line
+              puts line if not skip_line? line
+              output_contains_errors = true if line.index(error_seq)
             end
           end
-          #fail "running tests failed: encountered '#{error_seq}' sequence in the logfile" if output_contains_errors?
+          fail "running tests failed: encountered '#{error_seq}' sequence in the logfile" if output_contains_errors
           fail "running tests failed: gis.exe returned #{$?.exitstatus}" if $?.exitstatus != 0
         end
 
