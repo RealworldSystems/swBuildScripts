@@ -36,8 +36,8 @@ module Smallworld
   # from the current working dir.
   #
   module_function
-  def start_gis(args)
-    system SW_ENVIRONMENT, "#{gis_cmd} -e environment.bat #{args}"
+  def start_gis(*args)
+    system SW_ENVIRONMENT, gis_cmd, *%w[ -e environment.bat ] + args
   end
 
   # Start a Smallworld GIS (similar to +Smallworld::start_gis+), and redirect
@@ -45,7 +45,7 @@ module Smallworld
   #
   module_function
   def start_gis_redirect(args)
-    start_gis "-l log\\start_gis.log #{args} <NUL"
+    start_gis *%w[ -l log\start_gis.log ], args, :in => 'NUL'
   end
 
   class Image < Rake::Task
@@ -299,7 +299,7 @@ CLOBBER.include("**/*.msgc")
 
 desc "Start emacs"
 task :emacs do
-  Smallworld.start_gis "emacs -l bin\\share\\configure_realmacs.el"
+  Smallworld.start_gis *%w[ emacs -l bin\share\configure_realmacs.el ]
 end
 
 SW_ENVIRONMENT = Smallworld::load_config
