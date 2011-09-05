@@ -119,7 +119,7 @@ module Smallworld
         task :test => :build do
           puts "Starting unit tests for #{@full_comment} image"
 
-          start_gis_cmd = %W[ #{Smallworld.gis_cmd} #{@name} ]
+          start_gis_cmd = %W[ #{Smallworld.gis_cmd} -e environment.bat #{@name} ]
           cmd = [SW_ENVIRONMENT] + start_gis_cmd + [:in => 'config\magik_images\source\run_tests.magik']
 
           IO.popen cmd do |file|
@@ -127,6 +127,8 @@ module Smallworld
               puts line
             end
           end
+          #fail "running tests failed: encountered '#{error_seq}' sequence in the logfile" if output_contains_errors?
+          fail "running tests failed: gis.exe returned #{$?.exitstatus}" if $?.exitstatus != 0
         end
 
         desc "Remove the image for #{@full_comment}"
