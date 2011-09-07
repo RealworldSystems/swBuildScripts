@@ -119,18 +119,24 @@ module Smallworld
         task :test => :build do
           puts "Starting unit tests for #{@full_comment} image"
 
-          start_gis_cmd = %W[ #{Smallworld.gis_cmd} -e environment.bat #{@name} ]
-          cmd = [SW_ENVIRONMENT] + start_gis_cmd + [:in => 'config\magik_images\source\run_tests.magik']
+          exit_code, output_contains_errors = run_script('config\magik_images\source\run_tests.magik')
 
-          output_contains_errors = false
-          IO.popen cmd do |file|
-            file.each do |line|
-              puts line if not skip_line? line
-              output_contains_errors = true if line.index(error_seq)
-            end
-          end
+          fail "running tests failed: gis.exe returned #{$?.exitstatus}" if exit_code != 0
           fail "running tests failed: encountered '#{error_seq}' sequence in the logfile" if output_contains_errors
-          fail "running tests failed: gis.exe returned #{$?.exitstatus}" if $?.exitstatus != 0
+        end
+
+        desc "Run a script with #{@full_comment} image"
+        task :run_script do
+
+          script_file = ENV['RUN_SCRIPT']
+          fail "#{@name}:run: set environment variable RUN_SCRIPT to the appropriate file" if not script_file
+          fail "#{@name}:run: '#{script_file}' does not exist" if not File.exists?(script_file)
+
+          puts "Running script '#{script_file}' for image #{@full_comment}"
+          exit_code, output_contains_errors = run_script(script_file)
+
+          fail "running the script failed: gis.exe returned #{$?.exitstatus}" if exit_code != 0
+          fail "running the script failed: encountered '#{error_seq}' sequence in the logfile" if output_contains_errors
         end
 
         desc "Remove the image for #{@full_comment}"
@@ -167,6 +173,24 @@ module Smallworld
       stop_redirection
       fail "build failed: encountered '#{error_seq}' sequence in the logfile" if output_contains_errors?
       fail "build failed: gis.exe returned #{$?.exitstatus}" if $?.exitstatus != 0
+    end
+
+    # Runs the given script for the current image.  Doesn't check if the script
+    # file exists. Returns the exit code and, if the output contains any errors, according to the
+    # Smallworld error sequence (+error_seq+).
+    #
+    def run_script (script)
+      start_gis_cmd = %W[ #{Smallworld.gis_cmd} -e environment.bat #{@name} ]
+      cmd = [SW_ENVIRONMENT] + start_gis_cmd + [:in => script]
+
+      output_contains_errors = false
+      IO.popen cmd do |file|
+        file.each do |line|
+          puts line if not skip_line? line
+          output_contains_errors = true if line.index(error_seq)
+        end
+      end
+      [$?.exitstatus, output_contains_errors]
     end
 
     # Simulates redirection of the given file, by tailing the file to the
