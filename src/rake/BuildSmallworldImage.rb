@@ -120,7 +120,7 @@ module Smallworld
         task :test => :build do
           puts "Starting unit tests for #{@full_comment} image"
 
-          exit_code, output_contains_errors = run_script('config\magik_images\source\run_tests.magik')
+          exit_code, output_contains_errors = run_script(@name, 'config\magik_images\source\run_tests.magik')
 
           fail "running tests failed: gis.exe returned #{$?.exitstatus}" if exit_code != 0
           fail "running tests failed: encountered '#{error_seq}' sequence in the logfile" if output_contains_errors
@@ -134,7 +134,7 @@ module Smallworld
           fail "#{@name}:run: '#{script_file}' does not exist" if not File.exists?(script_file)
 
           puts "Running script '#{script_file}' for image #{@full_comment}"
-          exit_code, output_contains_errors = run_script(script_file)
+          exit_code, output_contains_errors = run_script(@name, script_file)
 
           fail "running the script failed: gis.exe returned #{$?.exitstatus}" if exit_code != 0
           fail "running the script failed: encountered '#{error_seq}' sequence in the logfile" if output_contains_errors
@@ -180,8 +180,9 @@ module Smallworld
     # file exists. Returns the exit code and, if the output contains any errors, according to the
     # Smallworld error sequence (+error_seq+).
     #
-    def run_script (script)
-      start_gis_cmd = %W[ #{Smallworld.gis_cmd} -e environment.bat #{@name} ]
+    module_function
+    def run_script (image_name, script)
+      start_gis_cmd = %W[ #{Smallworld.gis_cmd} -e environment.bat #{image_name} ]
       cmd = [SW_ENVIRONMENT] + start_gis_cmd + [:in => script]
 
       output_contains_errors = false
@@ -229,6 +230,7 @@ module Smallworld
     # Applies all filters to the line to check if it should be skipped.
     # Disabled if rake is invoke with the trace flag.
     #
+    module_function
     def skip_line?(line)
       return false if Rake::application.options.trace
 
