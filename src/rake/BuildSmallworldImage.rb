@@ -126,7 +126,7 @@ module Smallworld
         end
 
         desc "Run a script with #{@full_comment} image"
-        task :run_script do
+        task :run_script => :build do
 
           script_file = ENV['RUN_SCRIPT']
           fail "#{@name}:run: set environment variable RUN_SCRIPT to the appropriate file" if not script_file
