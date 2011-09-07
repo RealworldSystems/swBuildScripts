@@ -63,6 +63,7 @@ module Smallworld
         image = Rake.application.define_task(self, *args, &block)
         image.register_tasks(&block)
         image.clear_comment
+        image
       end
     end
 
