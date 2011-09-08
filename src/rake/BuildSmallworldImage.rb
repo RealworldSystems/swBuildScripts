@@ -37,7 +37,7 @@ module Smallworld
   #
   module_function
   def start_gis(*args)
-    system SW_ENVIRONMENT, gis_cmd, *%w[ -e environment.bat ] + args
+    system SW_ENVIRONMENT, gis_cmd, *%W[ -e #{File.absolute_path("environment.bat")} ] + args
   end
 
   # Start a Smallworld GIS (similar to +Smallworld::start_gis+), and redirect
@@ -182,7 +182,7 @@ module Smallworld
     #
     module_function
     def run_script (image_name, script)
-      start_gis_cmd = %W[ #{Smallworld.gis_cmd} -e environment.bat #{image_name} ]
+      start_gis_cmd = %W[ #{Smallworld.gis_cmd} -e #{File.absolute_path("environment.bat")} #{image_name} ]
       cmd = [SW_ENVIRONMENT] + start_gis_cmd + [:in => script]
 
       output_contains_errors = false
