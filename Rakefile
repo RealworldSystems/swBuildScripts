@@ -4,6 +4,11 @@ version = `git rev-parse --short HEAD`.strip
 build_number = ENV['BUILD_NUMBER']
 version += "-build#{build_number}" if build_number
 
+task :ln do
+	rm "../BuildSmallworldImage.rb"
+	safe_ln "src/rake/BuildSmallworldImage.rb", ".."
+end
+
 pt = Rake::PackageTask.new("swBuildScripts", version) do |p|
   p.need_zip = true
   p.package_files.include %w( src/**/* examples/**/* )
