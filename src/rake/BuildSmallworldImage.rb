@@ -103,12 +103,13 @@ module Smallworld
       namespace(@name) do |ns|
 
         file file_name => BUILD::DIRS + [(base_image.file_name rescue nil)].compact do
+          rm_f log_file
           puts "Building #{@full_comment} image"
           run_build
         end
 
         desc "Build a #{@full_comment} image"
-        task :build => [:clean_log_file, file_name]
+        task :build => file_name
 
         desc "Start a #{@full_comment} image"
         task :start => file_name do
@@ -143,10 +144,6 @@ module Smallworld
         desc "Remove the image for #{@full_comment}"
         task :clean do
           rm_f [file_name, log_file]
-        end
-
-        task :clean_log_file do
-          rm_f log_file
         end
 
         ns.tasks.each do |task|
