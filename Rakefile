@@ -1,12 +1,19 @@
 require 'rake/packagetask'
 
-version = `git rev-parse --short HEAD`.strip
+git_version = `git rev-parse --short HEAD`.strip
+version = git_version
 build_number = ENV['BUILD_NUMBER']
 version += "-build#{build_number}" if build_number
 
+desc "Installs the BuildSmallworldImage.rb library using hard links"
 task :ln do
 	rm "../BuildSmallworldImage.rb"
 	safe_ln "src/rake/BuildSmallworldImage.rb", ".."
+end
+
+desc "updates the parent SVN repository with the latest version of swBuildScripts"
+task :update => :ln do
+	sh %Q[ svn ci ../BuildSmallworldImage.rb -m "BUILD: updated swBuildScripts to version #{git_version}\nGEM:7261" ]
 end
 
 pt = Rake::PackageTask.new("swBuildScripts", version) do |p|
