@@ -37,6 +37,9 @@ module Smallworld
   #
   module_function
   def start_gis(*args)
+    if not File.exists?(gis_cmd)
+      fail "FATAL: unable to start gis.exe, file not found or available (full path: #{gis_cmd})"
+    end
     system SW_ENVIRONMENT, gis_cmd, *%W[ -e #{File.absolute_path("environment.bat")} ] + args
   end
 
