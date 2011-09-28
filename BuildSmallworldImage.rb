@@ -21,6 +21,9 @@ end
 module Smallworld
 
   module BUILD
+
+    extend Rake::DSL rescue nil
+
     DIRS = %w[ images log log/tests ]
     DIRS.each {|d| directory d}
   end
@@ -28,6 +31,7 @@ module Smallworld
   class Image < Rake::Task
 
     include BUILD
+    include Rake::DSL rescue nil
 
     # These are class methods.
     #
