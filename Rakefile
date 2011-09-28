@@ -13,7 +13,7 @@ end
 
 desc "updates the parent SVN repository with the latest version of swBuildScripts"
 task :update => :ln do
-	sh %Q[ svn ci ../BuildSmallworldImage.rb -m "BUILD: updated swBuildScripts to version #{git_version}\nGEM:7261" ]
+	sh %Q[ svn ci ../BuildSmallworldImage.rb -m "BUILD: updated swBuildScripts to version #{git_version}" ]
 end
 
 pt = Rake::PackageTask.new("swBuildScripts", version) do |p|
