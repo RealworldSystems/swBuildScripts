@@ -1,3 +1,5 @@
+
+# rake/clean is required below, so we can override the docs
 require 'YAML'
 require 'file/tail'
 require 'erb'
@@ -20,8 +22,6 @@ module Smallworld
 
   module BUILD
     DIRS = %w[ images log log/tests ]
-    #FIXME: include Rake::DSL somehow, so we don't get a warning for using the
-    #DSL method +directory+
     DIRS.each {|d| directory d}
   end
 
@@ -54,7 +54,6 @@ module Smallworld
   class Image < Rake::Task
 
     include BUILD
-    include Rake::DSL
 
     # These are class methods.
     #
