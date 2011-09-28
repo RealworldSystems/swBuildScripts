@@ -7,7 +7,7 @@ version += "-build#{build_number}" if build_number
 
 desc "Installs the BuildSmallworldImage.rb library using hard links"
 task :ln do
-	rm "../BuildSmallworldImage.rb"
+	rm_f "../BuildSmallworldImage.rb"
 	safe_ln "src/rake/BuildSmallworldImage.rb", ".."
 end
 
