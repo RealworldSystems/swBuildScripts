@@ -301,6 +301,7 @@ module Smallworld
 
     config = load_config_file(config_file)
     config.merge! load_config_file(user_config_file) if File.exists?(user_config_file)
+    config.merge! ENV
     config
   end
 
