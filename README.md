@@ -9,8 +9,10 @@ Introduction
 Features
 --------
 
- * override vars
+ * override environment variables
+  * possibility to override environment variables, such as the database, Emacs location, message db dir, etc.
  * see build output
+  * the output of Smallworld is redirected to the console
  * filter output
  * return a sensible exit code to the environment
  * incremental builds
@@ -18,6 +20,7 @@ Features
  * set of useful Magik code
   * normalize sources
   * opening of database
+  * automated running of unit tests / TR tests
   * etc.
 
 Install
@@ -27,14 +30,12 @@ Install
  * gem install file-tail
  * zip (retrieve from Info-Zip)
 
-Integration / Install Instructrions
+Integration / Install Instructions
 -----------
 
-Take a deployment package, and copy in the src/rake/* files. Upd
-
-
-copy in BuildSmallworldImage.rb
-define your smallworld images with SmallworldImage
+ * take a deployment package, and copy in the src/rake/* files. Upd
+ * copy in BuildSmallworldImage.rb
+ * define your smallworld images with SmallworldImage
 
 Usage
 -----
