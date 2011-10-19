@@ -2,14 +2,14 @@
 REM For Usage, see BUILD_IMAGE Unix shell script documentation
 
 setlocal
-set dir=%~dp0
+set dir=%SMALLWORLD_GIS%\bin\share\
 
 REM Get arguments: BUILD_IMAGE parent_alias [logfile] [magik_file]
 set parent_alias=%1
 set logfile=%2
 set magik_file=%3
 set title=magik_image: %SW_MAGIK_IMAGE_NAME%
-set gis=start /wait /min "%title%" cmd /c gis.exe
+set gis=gis.exe
 
 REM Process default values for arguments
 if "%logfile%"    == "" set logfile=%SW_MAGIK_IMAGE_NAME%.log
@@ -45,11 +45,11 @@ set output=%output:/=\%
 
 set input=%dir%%magik_file%
 
-echo %gis% -l "%output%" -i -q %parent_alias% -noinit ^< "%input%"
+REM echo %gis% -l "%output%" -i -q %parent_alias% -noinit ^< "%input%"
 rem pause
 
-%gis% -l "%output%" -q %parent_alias% -noinit ^< "%input%"
-echo EXIT CODE from %1 is %ERRORLEVEL%
+%gis% %parent_alias% -noinit < "%input%"
+REM echo EXIT CODE from %1 is %ERRORLEVEL%
 rem pause
 
 rem if "%ERRORLEVEL%" == "0" (
@@ -65,6 +65,6 @@ rem )
 
 
 endlocal
-echo EXIT CODE from %1 is %ERRORLEVEL%
+REM echo EXIT CODE from %1 is %ERRORLEVEL%
 exit %ERRORLEVEL%
 

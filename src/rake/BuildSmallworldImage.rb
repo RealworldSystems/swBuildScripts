@@ -43,14 +43,6 @@ module Smallworld
     system SW_ENVIRONMENT, gis_cmd, *%W[ -e #{File.absolute_path("environment.bat")} ] + args
   end
 
-  # Start a Smallworld GIS (similar to +Smallworld::start_gis+), and redirect
-  # standard input and output (input to NUL, output to log\start_gis.log).
-  #
-  module_function
-  def start_gis_redirect(args)
-    start_gis *%w[ -l log\start_gis.log ], args, :in => 'NUL'
-  end
-
   class Image < Rake::Task
 
     include BUILD
@@ -157,7 +149,7 @@ module Smallworld
     end
 
   end
-  
+
   module BUILD
 
     # Builds the given Smallworld image, redirects the build logfile to std out and
@@ -165,15 +157,16 @@ module Smallworld
     #
     def run_build
 
-      redirect_logfile_to_console(log_file) do |line|
-        puts line if not skip_line? line
-      end
+      env = {
+        'COMSPEC_OLD' => ENV['COMSPEC'],
+        'COMSPEC' => 'rubyw redirect_output.rb',
+      }
+      SW_ENVIRONMENT.merge! env
 
-      Smallworld.start_gis_redirect "build_#{@name}"
+      exit_code, output_contains_errors = run_script "build_#{@name}", 'NUL'
 
-      stop_redirection
-      fail "build failed: encountered '#{error_seq}' sequence in the logfile" if output_contains_errors?
-      fail "build failed: gis.exe returned #{$?.exitstatus}" if $?.exitstatus != 0
+      fail "build failed: encountered '#{error_seq}' sequence in the logfile" if output_contains_errors
+      fail "build failed: gis.exe returned #{$?.exitstatus}" if exit_code != 0
     end
 
     # Runs the given script for the current image.  Doesn't check if the script
@@ -193,38 +186,6 @@ module Smallworld
         end
       end
       [$?.exitstatus, output_contains_errors]
-    end
-
-    # Simulates redirection of the given file, by tailing the file to the
-    # console.
-    #
-    def redirect_logfile_to_console(file)
-      Thread.abort_on_exception = true
-      @output_log_thread = Thread.start do
-
-        until File.exists?(file)
-          sleep 1
-        end
-
-        File::Tail::Logfile.open(file) do |log|
-          log.tail do |line|
-            if block_given?
-              yield line
-            else
-              puts line
-            end
-          end
-        end
-      end
-    end
-
-    # Kill the redirection thread.
-    #
-    def stop_redirection
-      # we use a regular sleep, since a lock is acquired immediately, and the
-      # output is still lost
-      sleep 1
-      @output_log_thread.kill
     end
 
     # Applies all filters to the line to check if it should be skipped.
