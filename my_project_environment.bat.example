@@ -1,0 +1,5 @@
+@set gis=c:\smallworld\420\product\bin\x86\gis.exe
+@set SW_MESSAGE_DB_DIR=c:\smallworld\420\product\data
+@set SW_ACE_DB_DIR=c:\Smallworld\420\cambridge_db_prd\ds\ds_admin
+@set ROOS_TESTRUNNER_DB_DIR=d:\ds_testrunner
+@set EMACSROOT=c:\rwemacslt

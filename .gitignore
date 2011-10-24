@@ -24,6 +24,7 @@ smallworld_environment.bat
 
 # overrideable stuff
 my_environment.yaml
+my_project_environment.bat
 
 # https://raw.github.com/github/gitignore/master/Global/vim.gitignore
 .*.sw[a-z]
