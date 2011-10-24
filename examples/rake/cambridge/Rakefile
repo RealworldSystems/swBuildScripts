@@ -1,9 +1,0 @@
-require_relative 'BuildSmallworldImage'
-
-desc "closed cambridge"
-smallworld_image :cam_db_closed_swaf
-
-desc "open cambridge"
-smallworld_image :cam_db_open_swaf => :cam_db_closed_swaf
-
-task :default => "cam_db_open_swaf:build"
