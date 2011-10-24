@@ -9,6 +9,10 @@ desc "Installs the BuildSmallworldImage.rb library using hard links"
 task :ln do
 	rm_f "../BuildSmallworldImage.rb"
 	safe_ln "src/rake/BuildSmallworldImage.rb", ".."
+	rm_f "../BUILD_IMAGE.cmd"
+	safe_ln "src/rake/BUILD_IMAGE.cmd", ".."
+	rm_f "../redirect_output.rb"
+	safe_ln "src/rake/redirect_output.rb", ".."
 end
 
 desc "updates the parent SVN repository with the latest version of swBuildScripts"
