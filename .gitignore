@@ -1,6 +1,7 @@
 # standard source checkout stuff
 .magik-project
 .project
+Rakefile
 config
 data
 doc
@@ -11,6 +12,15 @@ modules
 product.def
 resources
 source
+scripts
+products
+
+project_environment.bat
+environment.bat
+environment.yaml
+my_environment.yaml.example
+gis_environment.bat
+smallworld_environment.bat
 
 # overrideable stuff
 my_environment.yaml
@@ -32,10 +42,25 @@ cpl-v10.html
 
 # utrm stuff
 customization_examples
-build.properties
-build.xml
 run_sonar_analysis.bat
 run_tests.bat
 
 # swBuildScripts stuff
 pkg
+
+# generic project files
+
+# UTRM stuff
+start_cdh.bat
+start_core.bat
+start_open.bat
+start_runtime.bat
+start_utrm.bat
+
+build_cdh.bat
+build_core.bat
+build_open.bat
+build_runtime.bat
+build_utrm.bat
+
+sonar-project.properties
