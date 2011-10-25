@@ -164,7 +164,7 @@ module Smallworld
 
       build_image = self.clone
 
-      build_image.listeners = [el = ErrorListener.new, $ll = LogfileListener.new("build_#{@name}")]
+      build_image.listeners = [el = ErrorListener.new, $ll = LogfileListener.new("build_#{@name}"), BuildProfilerListener.new]
       build_image.filters = [IgnoreOutputFilter.new, OutputTimestamperFilter.new] if not Rake::application.options.trace
 
       # This "COMSPEC hack" prevents Windows from spawning a new command prompt
@@ -267,8 +267,24 @@ module Smallworld
       end
     end
 
+    # This listener profiles the build by keeping time for each build job. It
+    # prints the time taken for the job, and total time to stdout.
+    #
+    class BuildProfilerListener < BaseListener
+      @@invoke_time = nil
+      def start_build
+        @@invoke_time = Time.now if not @@invoke_time
+        @start_time = Time.now
+      end
+
+      def end_build
+        puts "Build duration: #{Time.now - @start_time} s., Total time: #{Time.now - @@invoke_time} s."
+      end
+    end
+
     # This filter adds a timestamp to every output line, so the build can be
     # profiled.
+    #
     class OutputTimestamperFilter < BaseListener
       def message msg
         Time.now.strftime('[%H:%M:%S] ') + msg
