@@ -261,4 +261,16 @@ end
 
 SW_ENVIRONMENT = {}
 
+# Development tasks
+task :dev do
+  system 'git clone git@github.com:RealworldSystems/swBuildScripts.git'
+  mv 'swBuildScripts/.git', '.'
+  rm_rf 'swBuildScripts'
+end
+
+task :update do
+  commit_msg = 'BUILD: updated swBuildScripts to version'
+  sh %Q[ svn ci $(git ls-tree --name-only -r HEAD) -m "#{commit_msg} $(git rev-parse --short HEAD)" ]
+end
+
 # vim:set tw=80 ts=2 sts=2 sw=2 et:
