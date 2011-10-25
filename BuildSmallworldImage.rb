@@ -165,7 +165,7 @@ module Smallworld
       build_image = self.clone
 
       build_image.listeners = [el = ErrorListener.new, $ll = LogfileListener.new("build_#{@name}")]
-      build_image.filters = [IgnoreOutputFilter.new] if not Rake::application.options.trace
+      build_image.filters = [IgnoreOutputFilter.new, OutputTimestamperFilter.new] if not Rake::application.options.trace
 
       # This "COMSPEC hack" prevents Windows from spawning a new command prompt
       # by gis.exe, which looses the standard IO files. When Ruby does this, the
@@ -217,12 +217,9 @@ module Smallworld
     # nothing.
     #
     class BaseListener
-      def start_build
-      end
-      def end_build
-      end
-      def message msg
-      end
+      def start_build; end
+      def end_build; end
+      def message msg; end
     end
 
     # This listener detects the Smallworld error sequence +ERROR_SEQUENCE+. If
@@ -267,6 +264,14 @@ module Smallworld
 
       def message msg
         @logfile.write msg
+      end
+    end
+
+    # This filter adds a timestamp to every output line, so the build can be
+    # profiled.
+    class OutputTimestamperFilter < BaseListener
+      def message msg
+        Time.now.strftime('[%H:%M:%S] ') + msg
       end
     end
 
