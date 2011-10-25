@@ -1,8 +1,5 @@
 
 # rake/clean is required below, so we can override the docs
-require 'YAML'
-require 'file/tail'
-require 'erb'
 
 ## ###########################################################################
 # Definition of the Smallworld Image task
