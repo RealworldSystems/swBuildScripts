@@ -58,13 +58,6 @@ module Smallworld
       "images/#{@name}.msf"
     end
 
-    # Log file that Smallworld creates when building an image.  Returns a
-    # +String+ depicting the relative path of the image.
-    #
-    def log_file
-      "log/main/#{@name}.log"
-    end
-
     # The base image for this image. This takes the first dependency of this
     # task, since an image will always have a single image as dependency.
     # Returns the dependent +Smallworld::Image+.
@@ -119,7 +112,7 @@ module Smallworld
 
         desc "Remove the image for #{@full_comment}"
         task :clean do
-          rm_f [file_name, log_file]
+          rm_f file_name
         end
 
         ns.tasks.each do |task|
@@ -195,16 +188,6 @@ module Smallworld
     #
     def error_seq
       '**** Error: '
-    end
-
-    # Checks the logfile for the error sequence, fails if present.
-    #
-    def output_contains_errors?
-
-      File.open(log_file).each do |line|
-        return true if line.index(error_seq)
-      end
-      nil
     end
 
     DEFAULT_FILTERS = [
