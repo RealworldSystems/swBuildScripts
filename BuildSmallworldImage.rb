@@ -94,10 +94,15 @@ module Smallworld
         task :test => :build do
           puts "Starting unit tests for #{@full_comment} image"
 
-          exit_code = start_gis_redirect(@name, 'config\magik_images\source\run_tests.magik')
+          test_image = self.clone
 
-          fail "running tests failed: gis.exe returned #{$?.exitstatus}" if exit_code != 0
-          fail "running tests failed: encountered '#{ERROR_SEQUENCE}' sequence in the logfile" if output_contains_errors
+          test_image.listeners = [ef = ErrorListener.new]
+          test_image.filters = [IgnoreOutputFilter.new] if not Rake::application.options.trace
+
+          exit_code = test_image.run @name, 'config\magik_images\source\run_tests.magik'
+
+          fail "running tests failed: encountered '#{ErrorListener::ERROR_SEQUENCE}' sequence in the logfile" if ef.error?
+          fail "running tests failed: gis.exe returned #{exit_code}" if exit_code != 0
         end
 
         desc "Run a script with #{@full_comment} image"
@@ -107,11 +112,16 @@ module Smallworld
           fail "#{@name}:run: set environment variable RUN_SCRIPT to the appropriate file" if not script_file
           fail "#{@name}:run: '#{script_file}' does not exist" if not File.exists?(script_file)
 
-          puts "Running script '#{script_file}' for image #{@full_comment}"
-          exit_code = start_gis_redirect(@name, script_file)
+          run_image = self.clone
 
-          fail "running the script failed: gis.exe returned #{$?.exitstatus}" if exit_code != 0
-          fail "running the script failed: encountered '#{ERROR_SEQUENCE}' sequence in the logfile" if output_contains_errors
+          run_image.listeners = [ef = ErrorListener.new]
+          run_image.filters = [IgnoreOutputFilter.new] if not Rake::application.options.trace
+
+          puts "Running script '#{script_file}' for image #{@full_comment}"
+          exit_code = run_image.run @name, script_file
+
+          fail "running the script failed: encountered '#{ErrorListener::ERROR_SEQUENCE}' sequence in the logfile" if ef.error?
+          fail "running the script failed: gis.exe returned #{exit_code}" if exit_code != 0
         end
 
         desc "Remove the image for #{@full_comment}"
@@ -166,10 +176,10 @@ module Smallworld
         'COMSPEC_OLD' => ENV['COMSPEC'],
         'COMSPEC' => 'rubyw redirect_output.rb',
       }
-      ret_code = build_image.run "build_#{@name}"
+      exit_code = build_image.run "build_#{@name}"
 
       fail "build failed: encountered '#{ErrorListener::ERROR_SEQUENCE}' sequence in the logfile" if ef.error?
-      fail "build failed: gis.exe returned #{ret_code}" if ret_code != 0
+      fail "build failed: gis.exe returned #{exit_code}" if exit_code != 0
     end
 
     # Runs the given script for the current image.  Doesn't check if the script
