@@ -96,12 +96,12 @@ module Smallworld
 
           test_image = self.clone
 
-          test_image.listeners = [ef = ErrorListener.new]
+          test_image.listeners = [el = ErrorListener.new]
           test_image.filters = [IgnoreOutputFilter.new] if not Rake::application.options.trace
 
           exit_code = test_image.run @name, 'config\magik_images\source\run_tests.magik'
 
-          fail "running tests failed: encountered '#{ErrorListener::ERROR_SEQUENCE}' sequence in the logfile" if ef.error?
+          fail "running tests failed: encountered '#{ErrorListener::ERROR_SEQUENCE}' sequence in the logfile" if el.error?
           fail "running tests failed: gis.exe returned #{exit_code}" if exit_code != 0
         end
 
@@ -114,13 +114,13 @@ module Smallworld
 
           run_image = self.clone
 
-          run_image.listeners = [ef = ErrorListener.new]
+          run_image.listeners = [el = ErrorListener.new]
           run_image.filters = [IgnoreOutputFilter.new] if not Rake::application.options.trace
 
           puts "Running script '#{script_file}' for image #{@full_comment}"
           exit_code = run_image.run @name, script_file
 
-          fail "running the script failed: encountered '#{ErrorListener::ERROR_SEQUENCE}' sequence in the logfile" if ef.error?
+          fail "running the script failed: encountered '#{ErrorListener::ERROR_SEQUENCE}' sequence in the logfile" if el.error?
           fail "running the script failed: gis.exe returned #{exit_code}" if exit_code != 0
         end
 
@@ -164,7 +164,7 @@ module Smallworld
 
       build_image = self.clone
 
-      build_image.listeners = [ef = ErrorListener.new]
+      build_image.listeners = [el = ErrorListener.new, $ll = LogfileListener.new("build_#{@name}")]
       build_image.filters = [IgnoreOutputFilter.new] if not Rake::application.options.trace
 
       # This "COMSPEC hack" prevents Windows from spawning a new command prompt
@@ -178,7 +178,7 @@ module Smallworld
       }
       exit_code = build_image.run "build_#{@name}"
 
-      fail "build failed: encountered '#{ErrorListener::ERROR_SEQUENCE}' sequence in the logfile" if ef.error?
+      fail "build failed: encountered '#{ErrorListener::ERROR_SEQUENCE}' sequence in the logfile" if el.error?
       fail "build failed: gis.exe returned #{exit_code}" if exit_code != 0
     end
 
@@ -189,6 +189,9 @@ module Smallworld
     def run(image_name, stdin='NUL')
       cmd = %W[ start_gis.bat #{image_name} ] << {:in => stdin}
       cmd.unshift @env if @env
+
+      filters { |filter| filter.start_build }
+      listeners { |listener| listener.start_build }
 
       IO.popen cmd do |file|
         file.each do |line|
@@ -203,19 +206,35 @@ module Smallworld
           puts filtered_msg if filtered_msg
         end
       end
+
+      filters { |filter| filter.end_build }
+      listeners { |listener| listener.end_build }
+
       $?.exitstatus
+    end
+
+    # This is the most basic implementation of the listener interface. It does
+    # nothing.
+    #
+    class BaseListener
+      def start_build
+      end
+      def end_build
+      end
+      def message msg
+      end
     end
 
     # This listener detects the Smallworld error sequence +ERROR_SEQUENCE+. If
     # the sequence is present in the stream, then +error?+ method will report
     # that.
     #
-    class ErrorListener
+    class ErrorListener < BaseListener
       # The standard Smallworld error sequence.
       #
       ERROR_SEQUENCE = '**** Error: '
 
-      def new
+      def initialize
         @error = false
       end
 
@@ -231,11 +250,31 @@ module Smallworld
       end
     end
 
+    # This listener pipes the output back into a logfile
+    #
+    class LogfileListener < BaseListener
+      def initialize logfile_name
+        @logfile_name = logfile_name
+      end
+
+      def start_build
+        @logfile = open("log/#{@logfile_name}.log", 'w')
+      end
+
+      def end_build
+        @logfile.close
+      end
+
+      def message msg
+        @logfile.write msg
+      end
+    end
+
     # Filters the log message using the default filters
     # (+DEFAULT_IGNORE_FILTERS+), and the user supplied filters
     # (+OUTPUT_FILTERS+). If it matches, the message is ignored.
     #
-    class IgnoreOutputFilter
+    class IgnoreOutputFilter < BaseListener
       def filters
         if not @filters
           @filters = OUTPUT_FILTERS rescue []
