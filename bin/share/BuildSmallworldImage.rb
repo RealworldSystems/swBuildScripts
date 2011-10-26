@@ -177,7 +177,7 @@ module Smallworld
       # trigger the console creation of Windows.
       build_image.env = {
         'COMSPEC_OLD' => ENV['COMSPEC'],
-        'COMSPEC' => 'rubyw redirect_output.rb',
+        'COMSPEC' => 'rubyw bin/share/redirect_output.rb',
       }
       exit_code = build_image.run "build_#{@name}"
 
