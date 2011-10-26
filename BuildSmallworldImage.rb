@@ -81,6 +81,12 @@ module Smallworld
         desc "Build a #{@full_comment} image"
         task :build => file_name
 
+        desc "Rebuild a #{@full_comment} image"
+        task :rebuild do
+          Rake::Task["#{@name}:clean"].invoke
+          Rake::Task[file_name].invoke
+        end
+
         desc "Start a #{@full_comment} image"
         task :start => file_name do
           puts "Starting #{@full_comment} image"
