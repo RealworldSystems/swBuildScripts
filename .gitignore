@@ -50,18 +50,9 @@ run_tests.bat
 pkg
 
 # generic project files
+build_all.bat
 
 # UTRM stuff
-start_cdh.bat
-start_core.bat
-start_open.bat
-start_runtime.bat
 start_utrm.bat
-
-build_cdh.bat
-build_core.bat
-build_open.bat
-build_runtime.bat
-build_utrm.bat
 
 sonar-project.properties
