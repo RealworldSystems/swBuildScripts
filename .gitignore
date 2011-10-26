@@ -17,13 +17,9 @@ products
 
 project_environment.bat
 environment.bat
-environment.yaml
-my_environment.yaml.example
-gis_environment.bat
 smallworld_environment.bat
 
 # overrideable stuff
-my_environment.yaml
 my_project_environment.bat
 
 # https://raw.github.com/github/gitignore/master/Global/vim.gitignore
@@ -44,10 +40,6 @@ cpl-v10.html
 # utrm stuff
 customization_examples
 run_sonar_analysis.bat
-run_tests.bat
-
-# swBuildScripts stuff
-pkg
 
 # generic project files
 build_all.bat
@@ -55,4 +47,7 @@ build_all.bat
 # UTRM stuff
 start_utrm.bat
 
+# CDH stuff
 sonar-project.properties
+my_project_environment.bat.example
+sonar-magik-plugin/
