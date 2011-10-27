@@ -46,7 +46,10 @@ $
 
 _global run_tests <<
 _proc @ run_tests(_gather products)
-	write("run_tests(): running tests")
+	_if _not sw_module_manager.module(:munit_core_mods).loaded?
+	_then
+		condition.raise(:error, :string, "appropriate modules are not loaded, please add them to the image")
+	_endif
 	_local test_runner_product << system.getenv("TEST_RUNNER_PRODUCT")
 	_if test_runner_product = "munit"
 	_then
