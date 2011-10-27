@@ -1,0 +1,59 @@
+#% text_encoding = iso8859_1
+
+_package user
+$
+
+_global run_unit_tests <<
+_proc @ run_unit_tests(_gather products)
+
+	sw_module_manager.load_test_modules()
+
+	ts << sw:test_suite.new(_unset, "All tests")
+	_for product _over products.fast_elements()
+	_loop
+		write("Adding product: ", product)
+		ts.add_test(sw:test_suite.new_from_product(product))
+	_endloop
+
+	run_properties << properties.default( property_list.new() )
+	run_class      << run_properties[:test_runner_class].default( sw:test_runner )
+	run_method     << run_properties[:test_runner_method].default( :|run_in_foreground()| )
+	run_args       << run_properties[:test_runner_args].default( {} )
+
+	test_runner_output << system.getenv("TEST_RUNNER_OUTPUT").default("console")
+	_if test_runner_output = "xml"
+	_then
+		_local test_report_path << system.pathname_down(system.getenv(:LOG_DIR), "tests")
+		run_class << sw:xml_test_runner.new(_unset, :output_dir, test_report_path)
+		run_method << :run_in_new_stream|()|
+	_endif
+
+	run_class.perform(run_method, ts, _scatter run_args )
+_endproc
+$
+
+_global run_TR_tests <<
+_proc @ run_TR_tests()
+	sw_module_manager.load_test_modules()
+	roos_automatic_config_file << system.getenv("AUTOMATIC_CONFIG_FILE")
+	_if roos_automatic_config_file _is _unset
+	_then
+		condition.raise(:environment_variable_not_set, :name, "AUTOMATIC_CONFIG_FILE")
+	_endif
+	roos_automatic_engine.roos_start(roos_automatic_config_file)
+_endproc
+$
+
+_global run_tests <<
+_proc @ run_tests(_gather products)
+	write("run_tests(): running tests")
+	_local test_runner_product << system.getenv("TEST_RUNNER_PRODUCT")
+	_if test_runner_product = "munit"
+	_then
+		run_unit_tests(_scatter products)
+	_elif test_runner_product = "roos_testrunner"
+	_then
+		run_TR_tests()
+	_endif
+_endproc
+$

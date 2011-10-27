@@ -1,0 +1,77 @@
+#% text_encoding = iso8859_1
+_package user
+$
+
+_global image_date_stamp_proc <<
+_proc @ image_date_stamp_proc(mi)
+	# Set the image date_stamp
+	smallworld_product.sw!release_spin_date << date_time.now()
+_endproc
+$
+
+_global open_database_proc <<
+_proc @ open_database_proc(mi)
+	_dynamic !auth_context!  << _unset 
+	_if auth_view.alternative_control_enabled? _is _maybe _then
+		auth_view.alternative_control_enabled? << _false
+	_endif 
+	ace_dir << mi.open_database()
+	_if _not gis_program_manager.has_open_ace?
+	_then
+		condition.raise(:ace_load_failed, :category, ace_dir)
+	_endif
+
+	write("**** Info: Database Opened: ", ace_dir)
+	write("**** Info: Database Open Image. Built on ", date_time_now())
+_endproc
+$
+
+_global open_roos_databases <<
+_proc @ open_roos_databases(mi)
+
+	smallworld_product.open_database()
+
+	ace_db_dir << system.getenv("SW_ACE_DB_DIR")
+	roos_create_missing_databases << system.getenv("ROOS_CREATE_MISSING_DATABASES")
+	_if roos_create_missing_databases _isnt _unset _andif
+		_not system.file_exists?(system.pathname_down(ace_db_dir, "roos_ace.ds"))
+	_then
+		write("**** Info: ROOS ace view absent; creating")
+		roos_ace_view.create(ace_db_dir)
+	_endif
+
+	write("**** Info: opening the ROOS views")
+	gis_program_manager.open_roos_views(ace_db_dir)
+_endproc
+$
+
+_global fixup_products <<
+_proc @ fixup_products()
+
+	_if (project_dir << system.getenv("PROJECT_DIR")) _is _unset
+	_then
+		condition.raise(:environment_variable_not_set, :name, "PROJECT_DIR")
+	_endif
+	top_level_product << sw_product.new_from_def(project_dir)
+
+	_if smallworld_product.product(top_level_product.name).directory <>
+		top_level_product.directory
+	_then
+		write("**** Info: product dir has been relocated, fixing cached product dir and sources if required")
+
+		smallworld_product.product(top_level_product.name).directory << system.getenv(:PROJECT_DIR)
+		smallworld_product.fixup_products(_true)
+	_endif
+_endproc
+$
+
+_global startup_with_cli <<
+_proc @ startup_with_cli()
+
+	fixup_products()
+	startup()
+	
+	# start cli
+	_return _true
+_endproc
+$
