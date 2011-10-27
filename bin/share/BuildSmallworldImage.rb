@@ -371,7 +371,7 @@ end
 
 task :update do
   commit_msg = 'BUILD: updated swBuildScripts to version'
-  sh %Q[ svn ci $(git ls-tree --name-only -r HEAD) -m "#{commit_msg} $(git rev-parse --short HEAD)" ]
+  sh %Q[ svn ci $(git ls-tree --name-only -r HEAD |grep -v gitignore) -m "#{commit_msg} $(git rev-parse --short HEAD)" ]
 end
 
 # vim:set tw=80 ts=2 sts=2 sw=2 et:
