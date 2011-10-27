@@ -94,18 +94,11 @@ module Smallworld
         end
 
         desc "Run unit tests for #{@full_comment} image"
-        task :test => :build do
+        task :test do
           puts "Starting unit tests for #{@full_comment} image"
 
-          test_image = self.clone
-
-          test_image.listeners = [el = ErrorListener.new]
-          test_image.filters = [IgnoreOutputFilter.new] if not Rake::application.options.trace
-
-          exit_code = test_image.run @name, 'config\magik_images\source\run_tests.magik'
-
-          fail "running tests failed: encountered '#{ErrorListener::ERROR_SEQUENCE}' sequence in the logfile" if el.error?
-          fail "running tests failed: gis.exe returned #{exit_code}" if exit_code != 0
+          ENV['TEST_RUNNER_PRODUCT'] = 'munit'
+          Rake::Task["#{@name}:rebuild"].invoke
         end
 
         desc "Run a script with #{@full_comment} image"
