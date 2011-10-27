@@ -11,7 +11,6 @@ _proc @ run_unit_tests(_gather products)
 	ts << sw:test_suite.new(_unset, "All tests")
 	_for product _over products.fast_elements()
 	_loop
-		write("Adding product: ", product)
 		ts.add_test(sw:test_suite.new_from_product(product))
 	_endloop
 
