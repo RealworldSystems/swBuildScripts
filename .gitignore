@@ -18,6 +18,7 @@ products
 project_environment.bat
 environment.bat
 smallworld_environment.bat
+emacs.bat
 
 # overrideable stuff
 my_project_environment.bat
