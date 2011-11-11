@@ -11,7 +11,13 @@ $
 
 _global open_database_proc <<
 _proc @ open_database_proc(mi)
-	_dynamic !auth_context!  << _unset 
+
+	_dynamic !auth_context!
+	_if system.getenv("ROOS_DISABLE_AUTH_DURING_OPENING_DATABASE") _isnt _unset
+	_then
+		!auth_context! << _unset
+	_endif
+
 	_if auth_view.alternative_control_enabled? _is _maybe _then
 		auth_view.alternative_control_enabled? << _false
 	_endif 
