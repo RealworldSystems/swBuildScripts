@@ -139,7 +139,7 @@ module Smallworld
   #
   module_function
   def start_gis(args)
-    system "start_gis.bat #{args}"
+    system "bin/share/start_gis.bat #{args}"
   end
 
   module BUILD
@@ -183,7 +183,7 @@ module Smallworld
     # Smallworld error sequence (+ERROR_SEQUENCE+).
     #
     def run(image_name, stdin='NUL')
-      cmd = %W[ start_gis.bat #{image_name} ] << {:in => stdin}
+      cmd = %W[ bin/share/start_gis.bat #{image_name} ] << {:in => stdin}
       cmd.unshift @env if @env
 
       filters { |filter| filter.start_build }
