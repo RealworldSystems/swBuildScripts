@@ -45,7 +45,7 @@ run_sonar_analysis.bat
 build_all.bat
 
 # UTRM stuff
-start_utrm.bat
+start_open.bat
 
 # CDH stuff
 sonar-project.properties
