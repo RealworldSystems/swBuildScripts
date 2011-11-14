@@ -21,6 +21,11 @@ _package user
 $
 
 _iter _method method_finder.roos_directories()
+
+  ## Retrieves all directories known to the method_finder.
+  ##
+  ## This uses the undocumented method_finder command 'list_directories'.
+
   l_dirs << rope.new()
 
   method_finder.npr("list_directories")
@@ -35,12 +40,27 @@ _iter _method method_finder.roos_directories()
 _endmethod
 
 _method method_finder.roos_change_directory(p_old_directory, p_new_directory)
+
+  ## Instructs the method_finder to change P_OLD_DIRECTORY into
+  ## P_NEW_DIRECTORY.
+  ##
+  ## This uses the undocumented method_finder command 'change_directory'.
+
   method_finder.npr("change_directory " + p_old_directory + " " + p_new_directory)
+
 _endmethod
 
 
 _global normalize_sources <<
 _proc @ normalize_sources(mi)
+
+  ## Normalises the paths of all sources beneath the directory pointed to by
+  ## the environment variable $PROJECT_DIR. It will replace all absolute paths
+  ## with a relative path, which begins with $PROJECT_DIR.
+  ##
+  ## The class browser of Smallworld honor environment variables in paths given
+  ## by the method finder, making it possible to replace absolute paths with
+  ## relative paths, which this method does.
 
   _local l_t << date_time.now()
 
