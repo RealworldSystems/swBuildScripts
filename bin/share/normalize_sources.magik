@@ -50,6 +50,24 @@ _method method_finder.roos_change_directory(p_old_directory, p_new_directory)
 
 _endmethod
 
+_global roos_canonicalise_drive_letter <<
+_proc @ roos_canonicalise_drive_letter(p_path)
+
+  ## Canonicalises the drive letter in the given P_PATH. It will guarantee that
+  ## the drive letter is lowercase.
+
+  l_canonicalised_path << p_path.copy()
+
+  # poor man's implementation of a drive pattern, such as [A-Za-z]:[\\\\/].*
+  _if l_canonicalised_path[1].letter? _andif l_canonicalised_path[2] = %:
+  _then
+    _if _not l_canonicalised_path[1].ascii_lowercase?
+    _then
+      l_canonicalised_path[1] << l_canonicalised_path[1].lowercase
+    _endif
+  _endif
+    >> l_canonicalised_path
+_endproc
 
 _global normalize_sources <<
 _proc @ normalize_sources(mi)
@@ -64,20 +82,21 @@ _proc @ normalize_sources(mi)
 
   _local l_t << date_time.now()
 
-  l_orig_path_prefix << system.canonicalise(system.getenv("PROJECT_DIR"))
+  l_project_dir << system.canonicalise(system.getenv("PROJECT_DIR"))
+  l_orig_path_prefix << roos_canonicalise_drive_letter(l_project_dir)
   l_new_path_prefix << "$PROJECT_DIR"
 
-  # populate list with our absolute paths
+  # populate list with *our* absolute paths
   l_absolute_paths << rope.new()
   _for i_path _over method_finder.roos_directories()
   _loop
-    _if i_path.index_of_seq(l_orig_path_prefix) = 1
+    _if roos_canonicalise_drive_letter(i_path).index_of_seq(l_orig_path_prefix) = 1
     _then
       l_absolute_paths.add(i_path)
     _endif
   _endloop
 
-  # change them all
+  # change all accumelated absolute paths into to $PROJECT_DIR + relative path
   _for i_old_path _over l_absolute_paths.fast_elements()
   _loop
     i_new_path << l_new_path_prefix + i_old_path.slice_to_end(l_orig_path_prefix.size + 1)
