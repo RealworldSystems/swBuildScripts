@@ -31,35 +31,3 @@ _proc @ open_database_proc(mi)
 	write("**** Info: Database Open Image. Built on ", date_time_now())
 _endproc
 $
-
-_global open_roos_databases <<
-_proc @ open_roos_databases(mi)
-
-	smallworld_product.open_database()
-
-	ace_db_dir << system.getenv("SW_ACE_DB_DIR")
-	roos_create_missing_databases << system.getenv("ROOS_CREATE_MISSING_DATABASES")
-	_if roos_create_missing_databases _isnt _unset _andif
-		_not system.file_exists?(system.pathname_down(ace_db_dir, "roos_ace.ds"))
-	_then
-		write("**** Info: ROOS ace view absent; creating")
-		roos_ace_view.create(ace_db_dir)
-	_endif
-
-	write("**** Info: opening the ROOS views")
-	gis_program_manager.open_roos_views(ace_db_dir)
-_endproc
-$
-
-_global startup_with_cli <<
-_proc @ startup_with_cli()
-
-	_if gis_program_manager.has_open_ace?
-	_then
-		startup()
-	_endif
-	
-	# start cli
-	_return _true
-_endproc
-$
