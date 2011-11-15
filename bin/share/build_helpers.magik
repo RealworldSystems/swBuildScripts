@@ -75,7 +75,10 @@ _global startup_with_cli <<
 _proc @ startup_with_cli()
 
 	fixup_products()
-	startup()
+	_if gis_program_manager.has_open_ace?
+	_then
+		startup()
+	_endif
 	
 	# start cli
 	_return _true
