@@ -38,9 +38,16 @@ _proc @ install_source_tree_relocation(mi)
 
 		normalise_sources()
 
-		# fix the products during image restore time
-		# FIXME: only add the dependency if not yet added
+		# add a listener for the image restore event, if not installed
+		_for i_dep _over system.dependents(:image_restore_acps)
+		_loop
+			_if i_dep.is_class_of?(magik_image)
+			_then
+				_return
+			_endif
+		_endloop
 		system.add_dependent(mi, :image_restore_acps)
+
 	_endif
 _endproc
 $
