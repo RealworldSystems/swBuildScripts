@@ -48,6 +48,11 @@ _proc @ install_source_tree_relocation(mi)
 		_endloop
 		system.add_dependent(mi, :image_restore_acps)
 
+		_if mi.get_property(:save_arguments) _is _unset
+		_then
+			mi.properties[:save_arguments] << {:join, :gc}
+		_endif
+
 	_endif
 _endproc
 $
