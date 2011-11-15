@@ -59,3 +59,11 @@ _proc @ run_tests(_gather products)
 	_endif
 _endproc
 $
+
+_block
+	_if !source_file! _is _unset _andif system.getenv("UNIT_TEST_PRODUCT") _isnt _unset
+	_then
+		run_unit_tests(system.getenv("UNIT_TEST_PRODUCT"))
+	_endif
+_endblock
+$
