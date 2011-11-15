@@ -328,6 +328,7 @@ module Smallworld
         /^loading.*\.msg$/,
         /^generating .*msgc$/,
         /Product .* is already loaded from/,
+        /^Superseding method/,
       ]
     end
 
