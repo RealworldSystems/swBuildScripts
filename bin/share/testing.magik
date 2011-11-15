@@ -14,7 +14,7 @@ _proc @ run_unit_tests(_gather products)
 		ts.add_test(sw:test_suite.new_from_product(product))
 	_endloop
 
-	run_properties << properties.default( property_list.new() )
+	run_properties << property_list.new()
 	run_class      << run_properties[:test_runner_class].default( sw:test_runner )
 	run_method     << run_properties[:test_runner_method].default( :|run_in_foreground()| )
 	run_args       << run_properties[:test_runner_args].default( {} )
