@@ -1,0 +1,54 @@
+#% text_encoding = iso8859_1
+_package user
+$
+
+_global fix_absolute_product_paths <<
+_proc @ fix_absolute_product_paths()
+
+	_if (project_dir << system.getenv("PROJECT_DIR")) _is _unset
+	_then
+		condition.raise(:environment_variable_not_set, :name, "PROJECT_DIR")
+	_endif
+	top_level_product << sw_product.new_from_def(project_dir)
+
+	_if smallworld_product.product(top_level_product.name).directory <>
+		top_level_product.directory
+	_then
+		write("**** Info: source tree has been has been relocated; fixing cached absolute paths of product directories ")
+
+		smallworld_product.product(top_level_product.name).directory << system.getenv(:PROJECT_DIR)
+	_endif
+_endproc
+$
+
+_global install_source_tree_relocation <<
+_proc @ install_source_tree_relocation(mi)
+
+	## This removes all absolute path references from the images and method
+	## finder files (see SAB-7563 for details), making it possible to relocate a
+	## source tree without incorrect path references.
+	##
+	## This method needs to be added as pre image save procedure
+	## (pre_save_image_proc), and is enabled through the environment variable
+	## ROOS_ENABLE_SOURCE_TREE_RELOCATION.
+
+	_if system.getenv("ROOS_ENABLE_SOURCE_TREE_RELOCATION") _isnt _unset
+	_then
+		write("**** Info: enabling source tree relocation")
+
+		normalise_sources()
+
+		# fix the products during image restore time
+		# FIXME: only add the dependency if not yet added
+		system.add_dependent(mi, :image_restore_acps)
+	_endif
+_endproc
+$
+
+_method magik_image.note_change(p_who, p_what, _gather p_data)
+	_if p_who _is system _andif p_what _is :image_restore_acps
+	_then
+		fix_absolute_product_paths()
+	_endif
+_endmethod
+$

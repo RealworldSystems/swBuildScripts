@@ -51,30 +51,9 @@ _proc @ open_roos_databases(mi)
 _endproc
 $
 
-_global fixup_products <<
-_proc @ fixup_products()
-
-	_if (project_dir << system.getenv("PROJECT_DIR")) _is _unset
-	_then
-		condition.raise(:environment_variable_not_set, :name, "PROJECT_DIR")
-	_endif
-	top_level_product << sw_product.new_from_def(project_dir)
-
-	_if smallworld_product.product(top_level_product.name).directory <>
-		top_level_product.directory
-	_then
-		write("**** Info: product dir has been relocated, fixing cached product dir and sources if required")
-
-		smallworld_product.product(top_level_product.name).directory << system.getenv(:PROJECT_DIR)
-		smallworld_product.fixup_products(_true)
-	_endif
-_endproc
-$
-
 _global startup_with_cli <<
 _proc @ startup_with_cli()
 
-	fixup_products()
 	_if gis_program_manager.has_open_ace?
 	_then
 		startup()

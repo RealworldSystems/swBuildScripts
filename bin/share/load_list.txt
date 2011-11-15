@@ -1,3 +1,4 @@
 build_helpers
-normalize_sources
+normalise_sources
+source_tree_relocation
 testing

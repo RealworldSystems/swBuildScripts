@@ -1,5 +1,5 @@
 ##
-## File            : $File: (normalize_sources.magik) $
+## File            : $File: (normalise_sources.magik) $
 ## SCM             : $URL$
 ##
 ## Copyright       : Realworld Systems
@@ -38,6 +38,7 @@ _iter _method method_finder.roos_directories()
     _loopbody(i_dir)
   _endloop
 _endmethod
+$
 
 _method method_finder.roos_change_directory(p_old_directory, p_new_directory)
 
@@ -49,6 +50,7 @@ _method method_finder.roos_change_directory(p_old_directory, p_new_directory)
   method_finder.npr("change_directory " + p_old_directory + " " + p_new_directory)
 
 _endmethod
+$
 
 _global roos_canonicalise_drive_letter <<
 _proc @ roos_canonicalise_drive_letter(p_path)
@@ -68,9 +70,10 @@ _proc @ roos_canonicalise_drive_letter(p_path)
   _endif
     >> l_canonicalised_path
 _endproc
+$
 
-_global normalize_sources <<
-_proc @ normalize_sources(mi)
+_global normalise_sources <<
+_proc @ normalise_sources()
 
   ## Normalises the paths of all sources beneath the directory pointed to by
   ## the environment variable $PROJECT_DIR. It will replace all absolute paths
@@ -103,7 +106,7 @@ _proc @ normalize_sources(mi)
     method_finder.roos_change_directory(i_old_path, i_new_path)
   _endloop
 
-  write("**** Info: normalized source paths[", l_absolute_paths.size, "] (", date_time.now() - l_t, ")")
+  write("**** Info: normalized source paths[", l_absolute_paths.size, " entries]")
 
 _endproc
 $
