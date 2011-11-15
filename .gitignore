@@ -29,6 +29,7 @@ my_project_environment.bat
 Session.vim
 
 # SCM stuff
+.hg
 .hgignore
 .svn
 DEPS
