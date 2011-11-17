@@ -370,6 +370,11 @@ task :dev do
   rm_rf 'swBuildScripts'
 end
 
+task :update do
+  commit_msg = 'BUILD: updated swBuildScripts to version'
+  sh %Q[ svn ci $(git ls-tree --name-only -r HEAD |grep -v gitignore) -m "#{commit_msg} $(git rev-parse --short HEAD)" ]
+end
+
 #
 ################################################################################
 
