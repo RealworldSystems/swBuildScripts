@@ -1,0 +1,222 @@
+# Ideally gis and swaf should be identical to Core product's aliases...
+# It is convenient to include the parent image aliases in the same file.
+
+# External Parent images:
+gis:
+	title		= Run Smallworld Core GIS
+	image		= gis.msf
+	args		= -Mextdir %TEMP% %ARGS%
+	product		= gis
+
+swaf:
+	title		= Run Smallworld Application Framework
+	image		= swaf.msf
+	args		= -Mextdir %TEMP% %ARGS%
+	product		= gis
+
+# ORCA images
+
+build_orca_tools:
+	title		= Build image ORCA Tools
+	script		= %SMALLWORLD_GIS%/bin/share/BUILD_IMAGE
+	args		= gis
+	product		= orca
+	SW_MAGIK_IMAGE_NAME = orca_tools
+
+orca_tools:
+	title		= ORCA Tools
+	image		= orca_tools.msf
+	args		= -Mextdir %TEMP% %ARGS%
+	product		= gis
+
+build_runtime:
+	title		= Build runtime image (contains all runtime from $ORCA_RUNTIME_PATH)
+	script		= %SMALLWORLD_GIS%/bin/share/BUILD_IMAGE
+	args		= swaf
+	product		= orca
+	SW_MAGIK_IMAGE_NAME = runtime
+
+runtime:
+	title		= Runtime image
+	image		= runtime.msf
+	args		= -Mextdir %TEMP% %ARGS%
+	product		= gis
+
+build_orca_swaf:
+	title		= Build image ORCA Swaf
+	script		= %SMALLWORLD_GIS%/bin/share/BUILD_IMAGE
+	args		= runtime
+	product		= orca
+	SW_MAGIK_IMAGE_NAME = orca_swaf
+
+orca_swaf:
+	title		= ORCA Swaf
+	image		= orca_swaf.msf
+	args		= -Mextdir %TEMP% %ARGS%
+	product		= gis
+
+build_orca_closed:
+	title		= Build image ORCA Closed
+	script		= %SMALLWORLD_GIS%/bin/share/BUILD_IMAGE
+	args		= orca_swaf
+	product		= orca
+	SW_MAGIK_IMAGE_NAME = orca_closed
+
+orca_closed:
+	title		= ORCA Closed
+	image		= orca_closed.msf
+	product		= gis
+	args		= -Mextdir %TEMP% %ARGS%
+
+build_orca_custom_closed:
+	title		= Build image ORCA Custom Closed
+	script		= %SMALLWORLD_GIS%/bin/share/BUILD_IMAGE
+	args		= orca_closed
+	product		= orca
+	SW_MAGIK_IMAGE_NAME = orca_custom_closed
+
+orca_custom_closed:
+	title		= ORCA Custom Closed
+	image		= orca_custom_closed.msf
+	product		= gis
+	args		= -Mextdir %TEMP% %ARGS%
+
+build_orca_custom_sync_closed
+	title		= Build image ORCA Custom Sync Closed
+	script		= %SMALLWORLD_GIS%/bin/share/BUILD_IMAGE
+	args		= orca_custom_closed
+	product		= orca
+	SW_MAGIK_IMAGE_NAME = orca_custom_sync_closed
+
+orca_custom_sync_closed:
+	title		= ORCA Custom Sync Closed
+	image		= orca_custom_sync_closed.msf
+	product		= gis
+	args		= -Mextdir %TEMP% %ARGS%
+
+build_orca_custom_open:
+	title		= Build image ORCA Custom Open
+	script		= %SMALLWORLD_GIS%/bin/share/BUILD_IMAGE
+	args		= orca_custom_closed
+	product		= orca
+	SW_MAGIK_IMAGE_NAME = orca_custom_open
+
+orca_custom_open:
+	title		= ORCA Custom Open
+	image		= orca_custom_open.msf
+	product		= gis
+	args		= -Mextdir %TEMP% %ARGS%
+
+orca_custom_open_cli:
+	title		= ORCA Custom Open
+	image		= orca_custom_open.msf
+	product		= gis
+	args		= -Mextdir %TEMP% %ARGS% -cli
+
+orca_custom_open (English):
+	title		= ORCA Custom Open
+	image		= orca_custom_open.msf
+	product		= gis
+	args		= -Mextdir %TEMP% %ARGS%
+	SW_LANGUAGE	= en_gb;nl_nl
+
+build_orca_custom_sync_open:
+	title		= Build image ORCA Custom Sync Open
+	script		= %SMALLWORLD_GIS%/bin/share/BUILD_IMAGE
+	args		= orca_custom_sync_closed
+	product		= orca
+	SW_MAGIK_IMAGE_NAME = orca_custom_sync_open
+
+orca_custom_sync_open:
+	title		= ORCA Custom Sync Open
+	image		= orca_custom_sync_open.msf
+	product		= gis
+	args		= -Mextdir %TEMP% %ARGS%
+
+build_orca_custom_sync_dev_open:
+	title		= Build image ORCA Custom Sync Dev Open
+	script		= %SMALLWORLD_GIS%/bin/share/BUILD_IMAGE
+	args		= orca_custom_sync_closed
+	product		= orca
+	SW_MAGIK_IMAGE_NAME = orca_custom_sync_dev_open
+
+orca_custom_sync_dev_open:
+	title		= ORCA Custom Sync Dev Open
+	image		= orca_custom_sync_dev_open.msf
+	product		= gis
+	args		= -Mextdir %TEMP% %ARGS%
+
+orca_custom_batch_open:
+	title		= ORCA Custom GS Batch Gen Open
+	image		= orca_custom_open.msf
+	product		= gis
+	directory	= %TEMP%
+	args		= -Mextdir %TEMP% %ARGS%
+
+orca_TestRunner:
+	title		= ORCA TestRunner Open
+	ROOS_TESTRUNNER_DB_DIR=\\files2\ZiggoSLA2\devenv4.2\ds_testrunner
+	image		= orca_custom_dev_testrunner_open.msf
+	product		= gis
+	directory	= %TEMP%
+	args		= -Mextdir %TEMP% %ARGS%
+
+orca_tools:
+	title		= ORCA Tools
+	image		= orca_tools.msf
+	product		= gis
+	args		= -Mextdir %TEMP% %ARGS%
+
+orca_sts:
+	title		= ORCA Short Transation Server
+	image		= orca_sts_open.msf
+	product		= gis
+	args		= -Mextdir %TEMP% %ARGS%
+	program		= sw_magik
+
+orca_custom_open_merge_post:
+	title		= ORCA Custom Open Merge Post
+	image		= orca_custom_open_merge_post.msf
+	product		= gis
+	args		= -Mextdir %TEMP% %ARGS%
+
+orca_custom_open_merge_post_ploud:
+	title		= ORCA Custom Open Merge Post Planning Oud
+	image		= orca_custom_open_merge_post_ploud.msf
+	product		= gis
+	args		= -Mextdir %TEMP% %ARGS%
+-
+
+Orca Migratie Applicatie (Base closed for building):
+	title		= ORCA Mig Base closed for building
+	image		= \\Realworld3\PrdAtHome\images\main\orca_custom_closed.msf
+	product		= gis
+	args		= -Mextdir %TEMP% %ARGS%
+	SW_ACE_DB_DIR   = %SNA_DB_ROOT%\admin_migration
+	SW_PRODUCTS_PATH= %SW_PRODUCTS_PATH%;%ORCA_ROOT%\app\MigrationNorth
+
+Orca Migratie Applicatie (Ontw):
+	title		= ORCA Custom Mig Open
+	image		= orca_custom_mig_open.msf
+	product		= gis
+	args		= -Mextdir %TEMP% %ARGS%
+	args		= -Mextdir %TEMP% -cli
+	SW_ACE_DB_DIR   = %SNA_DB_ROOT%\admin_migration
+	SW_PRODUCTS_PATH= %SW_PRODUCTS_PATH%;%ORCA_ROOT%\app\MigrationNorth
+
+-
+orca_report_server_open:
+	title		= ORCA Report Server Open
+	image		= orca_report_server_open.msf
+	product		= gis
+	args		= -Mextdir %TEMP% %ARGS%
+
+emacs:
+	HOME		= %HOMEDRIVE%%HOMEPATH%
+	PATH		= %PATH%;%EMACSROOT%\bin
+	title		= GNU Emacs
+	program		= %EMACSROOT%\bin\runemacs.exe
+	icon_file	= %EMACSROOT%\bin\runemacs.exe
+	log_file	= nul:
+	product		= emacs
+	args		= -l %PROJECT_DIR%\bin\share\configure_realmacs.el

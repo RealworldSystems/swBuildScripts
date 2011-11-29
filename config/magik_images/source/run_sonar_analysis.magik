@@ -1,0 +1,89 @@
+#% text_encoding = iso8859_1
+##
+## File            : sonar_analysis.magik
+##
+## Copyright       : Realworld Systems
+##                   e-mail  : support@realworld-systems.com
+##                   address : Venusstraat 17, 4105 JH Culemborg, The Netherlands
+##                   tel     : +31(0)345 614406
+##                   fax     : +31(0)345 614319
+##
+## Contains        : 
+##
+##
+## Date written   : ??
+## Date changed    : Jan/2011
+##
+## `Source contents (Starts with evt. Shared Cons/vars, Automatically maintained):'
+##
+## `Source Code'
+#&&
+#
+
+#
+# Build and save the closed image for the Cambridge Database +RW
+# then quit.
+#
+# Must be run by 'load_file()'
+# Must be located 'next to' the modules directory
+#
+
+_package user
+$
+
+_block
+	write("starting analyzing")
+	_local l_utrm_path << system.getenv(:project_dir)
+	
+	#  load the tsb's from the TSB_PATHS env var
+	_local l_tsb_paths << system.getenv(:tsb_paths).default("")
+	_for i_tsb_path _over l_tsb_paths.split_by(%;).fast_elements()
+	_loop
+		sw!update_image(i_tsb_path)
+	_endloop
+	
+	# and do the original update call
+	sw!update_image()
+
+#	_local top_level_module_name <<
+#		system.getenv("TOP_MODULE_NAME").as_symbol()
+
+	sw:sw_module_manager.always_patch? << _true
+
+	smallworld_product.load_product_definition(l_utrm_path)
+	
+	_local analyse_module << _proc(p_module, _optional p_version)
+					 _local l_workspace_dir << system.getenv(:project_dir)
+					 _local l_output_file << system.pathname_down(l_workspace_dir, "log", "compile_log_" + p_module + ".xml")
+					 
+					 # init the CDH
+					 !current_package![:roos_code_definition_handler].listener.roos_composites.add_last(
+												 roos_xml_logging_code_event_listener.new(l_output_file)
+														   )
+					 
+					 !current_package![:roos_code_definition_handler].activate()
+					 
+					 sw_module_manager.load_module(p_module, p_version,
+								       :save_magikc?, _false)
+					 
+					 # flush the CDH
+					 !current_package![:roos_code_definition_handler].deactivate()
+					 !current_package![:roos_code_definition_handler].listener.roos_finish()
+					 !current_package![:roos_code_definition_handler].listener.roos_composites.empty()
+				 _endproc
+	
+	_local load_product_modules << _proc(p_product)
+					       _for i_module _over smallworld_product.product(:munit).defined_modules.fast_elements()
+					       _loop
+						       sw_module_manager.load_module(i_module.name, i_module.version,
+										     :save_magikc?, _false)
+					       _endloop
+				       _endproc
+
+	analyse_module(:sonar_rw_core)
+	analyse_module(:sonar_rw_misc)
+	load_product_modules(:munit)
+	analyse_module(:sonar_rw_testrunner)
+_endblock
+$
+

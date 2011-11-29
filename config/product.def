@@ -1,0 +1,9 @@
+orca_config layered_product
+
+title
+	ORCA configuration product
+end
+
+description
+	ORCA configuration product
+end
