@@ -10,63 +10,9 @@ _block
 
 				:post_build_proc, image_date_stamp_proc,
 				:package, :user,
-				:pre_save_image_proc, install_source_tree_relocation,
 
 				_scatter p_args)
 		_endproc
-
-	register_with_defaults("orca_tools",
-		:add_products, system.pathname_up(!hack_file!, 4),
-		:load_modules, :orca_tools_image
-	)
-
-	# runtime image is defined below, to make this file more readable
-
-	register_with_defaults("orca_swaf",
-		:add_products, system.pathname_up(!hack_file!, 4),
-		:init_build_proc,
-			_proc(mi)
-				mi.sw!update_image()
-			_endproc,
-		:load_modules, :orca_sw_modules_image
-	)
-
-	register_with_defaults("orca_closed",
-		:load_modules, {
-			:roos_initial,
-			:roos_initial_orca_specific,
-
-			:orca_modules_image
-		}
-	)
-
-	register_with_defaults("orca_custom_closed",
-		:load_modules, {
-			:orca_custom_sw_comps_image,
-			:orca_custom_image
-		},
-		:post_patch_proc, _proc@reinitialise_customised_resources(mi)
-												_for i_customisation_product _over smallworld_product.customisation_products.fast_elements()
-												_loop
-													i_customisation_product.reinitialise()
-												_endloop
-											_endproc
-	)
-
-	register_with_defaults("orca_custom_open",
-		:open_database_proc, open_database_proc,
-		:startup_proc, startup,
-		:post_patch_proc,
-			_proc(mi)
-				smallworld_product.set_startup_option(:style_top_alternative, "|")
-				smallworld_product.set_startup_option(:auto_login, :login_from_system|()|)
-				smallworld_product.set_startup_option(:ds_environment_options, {:nslots,    10000,
-												:npcls,     32768,
-												:nbuffs,    4096,
-												:lwt_space, 524288})
-				smallworld_product.add_application_procedure(auto_aces_merge)
-			_endproc
-	)
 
 	register_with_defaults("runtime",
 		:add_products, system.getenv("ORCA_RUNTIME_PATH"),
