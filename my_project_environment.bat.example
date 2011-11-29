@@ -1,0 +1,4 @@
+@if not defined ORCA_RUNTIME_PATH set ORCA_RUNTIME_PATH=..\orca_runtime
+@if not defined gis set gis=%ORCA_RUNTIME_PATH%\sw\product\bin\x86\gis.exe
+
+@if not defined EMACSROOT set EMACSROOT=c:\rwemacslt
