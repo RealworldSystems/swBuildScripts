@@ -53,3 +53,9 @@ start_open.bat
 sonar-project.properties
 my_project_environment.bat.example
 sonar-magik-plugin/
+
+# ORCA runtime stuff
+MD5SUMS
+munit*
+sw*
+realworld_modules*
