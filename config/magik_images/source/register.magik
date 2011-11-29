@@ -15,7 +15,7 @@ _block
 		_endproc
 
 	register_with_defaults("runtime",
-		:add_products, system.getenv("ORCA_RUNTIME_PATH"),
+		:add_products, system.getenv("PROJECT_DIR"),
 		:init_build_proc,
 			_proc(mi)
 				mi.sw!update_image()
