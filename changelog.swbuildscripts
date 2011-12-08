@@ -1,0 +1,7 @@
+
+0.2 / 2011-12-08 
+==================
+
+  * Redirects stderr to stdout of builds.
+  * Changes versioning information used for updating SVN.
+  * Fixes building the images from UNC paths.
