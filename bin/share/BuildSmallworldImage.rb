@@ -180,7 +180,7 @@ module Smallworld
     # Smallworld error sequence (+ERROR_SEQUENCE+).
     #
     def run(image_name, stdin='NUL')
-      cmd = %W[ bin/share/start_gis.bat #{image_name} ] << {:in => stdin}
+      cmd = %W[ bin/share/start_gis.bat #{image_name} ] << {:in => stdin, :err => :out}
       cmd.unshift @env if @env
 
       filters { |filter| filter.start_build }
