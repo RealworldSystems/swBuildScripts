@@ -1,4 +1,10 @@
 
+0.3 / 2011-12-22 
+==================
+
+  * Override PROCESSOR_ARCHITECTURE to fix #8.
+  * Adds changelog
+
 0.2 / 2011-12-08 
 ==================
 
