@@ -5,3 +5,6 @@ set LOG_DIR=%PROJECT_DIR%\log
 set SW_SAVE_IMAGE_DIR=%PROJECT_DIR%\images
 set SW_SAVE_IMAGE_DIR_FORMAT=spin
 set SPIN=main
+
+:: sw binaries are always located in the x86 path, so overrule it
+set PROCESSOR_ARCHITECTURE=x86
