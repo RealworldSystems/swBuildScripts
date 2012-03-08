@@ -9,7 +9,7 @@ set parent_alias=%1
 set logfile=%2
 set magik_file=%3
 set title=magik_image: %SW_MAGIK_IMAGE_NAME%
-set gis=gis.exe
+set gis=runalias.exe
 
 REM Process default values for arguments
 if "%logfile%"    == "" set logfile=%SW_MAGIK_IMAGE_NAME%.log

@@ -107,14 +107,12 @@ module Smallworld
 
           run_image = self.clone
 
-          run_image.listeners = [el = ErrorListener.new]
           run_image.filters = [IgnoreOutputFilter.new] if not Rake::application.options.trace
 
           puts "Running script '#{script_file}' for image #{@full_comment}"
           exit_code = run_image.run @name, script_file
 
-          fail "running the script failed: encountered '#{ErrorListener::ERROR_SEQUENCE}' sequence in the logfile" if el.error?
-          fail "running the script failed: gis.exe returned #{exit_code}" if exit_code != 0
+          fail "running the script failed: runalias.exe returned #{exit_code}" if exit_code != 0
         end
 
         desc "Remove the image for #{@full_comment}"
@@ -157,22 +155,12 @@ module Smallworld
 
       build_image = self.clone
 
-      build_image.listeners = [el = ErrorListener.new, $ll = LogfileListener.new("build_#{@name}"), BuildProfilerListener.new]
+      build_image.listeners = [$ll = LogfileListener.new("build_#{@name}"), BuildProfilerListener.new]
       build_image.filters = [IgnoreOutputFilter.new, OutputTimestamperFilter.new] if not Rake::application.options.trace
 
-      # This "COMSPEC hack" prevents Windows from spawning a new command prompt
-      # by gis.exe, which looses the standard IO files. When Ruby does this, the
-      # standard IO files are preserved. Rubyw is required, since that runs in
-      # the "UI subsystem", as opposed to cmd.exe. Running rubyw.exe doesn't
-      # trigger the console creation of Windows.
-      build_image.env = {
-        'COMSPEC_OLD' => ENV['COMSPEC'],
-        'COMSPEC' => 'rubyw bin/share/redirect_output.rb',
-      }
       exit_code = build_image.run "build_#{@name}"
 
-      fail "build failed: encountered '#{ErrorListener::ERROR_SEQUENCE}' sequence in the logfile" if el.error?
-      fail "build failed: gis.exe returned #{exit_code}" if exit_code != 0
+      fail "build failed: runalias.exe returned #{exit_code}" if exit_code != 0
     end
 
     # Runs the given script for the current image.  Doesn't check if the script
@@ -213,31 +201,6 @@ module Smallworld
       def start_build; end
       def end_build; end
       def message msg; end
-    end
-
-    # This listener detects the Smallworld error sequence +ERROR_SEQUENCE+. If
-    # the sequence is present in the stream, then +error?+ method will report
-    # that.
-    #
-    class ErrorListener < BaseListener
-      # The standard Smallworld error sequence.
-      #
-      ERROR_SEQUENCE = '**** Error: '
-
-      def initialize
-        @error = false
-      end
-
-      # Return if the Smallworld error sequence was detected in the given
-      # stream.
-      #
-      def error?
-        @error
-      end
-
-      def message msg
-        @error = true if msg.index(ERROR_SEQUENCE)
-      end
     end
 
     # This listener pipes the output back into a logfile
