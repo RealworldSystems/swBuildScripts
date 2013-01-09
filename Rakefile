@@ -8,7 +8,7 @@ smallworld_image :munit_gui
 
 task :move_munit do
   FileList['munit/*'].each do |f|
-    mv f, '.'
+    mv f, '.', :force => true
   end
 end
 
